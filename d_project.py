@@ -1,11 +1,14 @@
 import tkinter as tk
 from tkinter import ttk
 from tkmacosx import Button as button
+import math
 
+
+MAIN_FRAME_COLOR = "#f4efeb"
 
 def main():
     window = tk.Tk()
-    window.title("Dialysis Diet Assistant By Yihan Ye")
+    window.title("Dialysis Nutrition Information By Yihan Ye")
     window.geometry("900x900")
     window.configure(bg="#bedddc")
 
@@ -21,48 +24,102 @@ def main():
     )
     header.place(relx=0.17, rely=0.25)
 
-    # Main frame where all information appear in
-    frame = tk.Frame(window, bg="#f4efeb")
-    frame.place(relx=0.22, rely=0.2, relwidth=0.74, relheight=0.65)
+    # Frame for each button category
+    calc_frame = tk.Frame(window, bg='red')
+    calc_frame.place(relx=0.225, rely=0.2, relwidth=0.75, relheight=0.65)
+
+    nutr_frame = tk.Frame(window, bg='green')
+    nutr_frame.place(relx=0.225, rely=0.2, relwidth=0.75, relheight=0.65)
+
+    tips_frame = tk.Frame(window, bg='yellow')
+    tips_frame.place(relx=0.225, rely=0.2, relwidth=0.75, relheight=0.65)
+
+    slides_frame = tk.Frame(window, bg='blue')
+    slides_frame.place(relx=0.225, rely=0.2, relwidth=0.75, relheight=0.65)
+
     # Button frame containing all buttons
     button_frame = tk.Frame(window, bg="green")
     button_frame.place(relx=0.025, rely=0.2, relwidth=0.2, relheight=0.65)
 
     # diet_tabs(frame)
-    calculator_frame(frame)
     # Creating buttons with butt() and naming them
-    btn_names = ["Calculator", "Nutrition", "Tips & Tricks", "Slides"]
-    for name in btn_names:
-        butt(name, button_frame)
+    butt('Calculator', button_frame, calc_frame)
+    butt('Nutrition', button_frame, nutr_frame)
+    butt('Tips & Tricks', button_frame, tips_frame)
+    butt('Slides', button_frame, slides_frame)
 
-    # btn_calc = butt('Calculator', button_frame, calculator_frame(frame))
-    # btn_nutr = butt("Nutrition", button_frame, diet_tabs(frame))
 
     window.resizable(True, True)
     window.mainloop()
 
-def weight_calc(weight):
-    daily_calories = float(weight) * 30
-    print("Your daily energy requirement is", daily_calories, "!")
+
+# Rounds number > = 0.5 up, else down
+def round_half_up(n, decimals=0):
+    multiplier = 10 ** decimals
+    return math.floor(n * multiplier + 0.5) / multiplier
 
 
+def swap_frames(frame):
+    frame.tkraise()
 
-def calculator_frame(frame):
+# Calculates daily intakes and displays them on the screen
+def weight_calc(frame, weight):
+    # Converts weight into float for accurate calculation, rounds the number and return as integer
+    daily_calories = int(round_half_up(float(weight.strip().strip("kg")) * 30))
+    calories_result = f"Calories per day: {daily_calories}"
+
+    daily_protein = int(round_half_up(float(weight.strip().strip("kg")) * 1.2))
+    protein_result = f"Protein per day: {daily_protein}"
+
+    display_calories = tk.Label(
+        frame, text=calories_result, bg=MAIN_FRAME_COLOR, font=("Arial", 18)
+    )
+    display_calories.pack(pady=25)
+
+    display_protein = tk.Label(
+        frame, text=protein_result, bg=MAIN_FRAME_COLOR, font=("Arial", 18)
+    )
+    display_protein.pack()
+
+
+# Generates label, entry box and submit button for weight input
+def weight_group(calc_frame):
+    # Instructions Label
+    instructions = tk.Label(
+        calc_frame,
+        text="Calculate your daily energy and protein intake requirements.",
+        font=("Arial", 20),
+        bg=MAIN_FRAME_COLOR,
+    )
+    instructions.pack(pady=25)
+
+    # Enter weight, label
     weight_label = tk.Label(
-        frame,
+        calc_frame,
         text="Enter your weight in kg:",
         font=("Arial", 18),
-        bg="#f4efeb",
+        bg=MAIN_FRAME_COLOR,
     )
-    weight_label.place(relx=0.1, rely=0.15)
+    weight_label.pack(pady=10)
 
-    weight_entry = tk.Entry(frame)
-    weight_entry.place(relx=0.1, rely=0.25, relwidth=0.3)
+    # Weight entry box
+    weight_entry = tk.Entry(calc_frame)
+    weight_entry.pack(pady=10)
 
+    # Weight submit button
     weight_btn = button(
-        frame, text="Submit", bg='#5ddeef', activebackground="#4285f4", font=("Arial", 14), command=lambda:weight_calc(weight_entry.get())
+        calc_frame,
+        text="Submit",
+        bg="#5ddeef",
+        activebackground="#4285f4",
+        font=("Arial", 14),
+        command=lambda:weight_calc(calc_frame, weight_entry.get()),
     )
-    weight_btn.place(relx=0.42, rely=0.25)
+    weight_btn.pack(pady=10)
+
+    #additional information
+    note = tk.Label(calc_frame, text='*All numbers are rounded to the nearest ones place', bg=MAIN_FRAME_COLOR)
+    note.place(relx=0.05, rely=0.9)
 
 
 # Generating tabs to divide the diet section into 3 parts
@@ -87,7 +144,7 @@ def diet_tabs(frame):
 
 
 # Creating buttons for each category. Buttons are lined up one on the side.
-def butt(btn_text, frame):
+def butt(btn_text, frame, raise_frame):
     btn = button(
         frame,
         text=btn_text,
@@ -97,7 +154,7 @@ def butt(btn_text, frame):
         # activeforeground="black",
         font=("Arial", 24),
         relief="raised",
-        # command=func
+        command=lambda:swap_frames(raise_frame)
     )
     btn.pack(fill="x")
 
