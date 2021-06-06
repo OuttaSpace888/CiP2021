@@ -6,6 +6,7 @@ import math
 
 MAIN_FRAME_COLOR = "#f4efeb"
 
+
 def main():
     window = tk.Tk()
     window.title("Dialysis Nutrition Information By Yihan Ye")
@@ -13,44 +14,58 @@ def main():
     window.configure(bg="#bedddc")
 
     # Generating header and placing it into main window
-    header_frame = tk.Frame(window, bg="#bedddc")
-    header_frame.place(relx=0.22, rely=0.08, relwidth=0.75, relheight=0.15)
     header = tk.Label(
-        header_frame,
+        window,
         text="Dialysis Nutrition Information",
         justify="center",
         bg="#bedddc",
         font=("Arial", 32, "bold"),
     )
-    header.place(relx=0.17, rely=0.25)
+    header.place(relx=0.35, rely=0.1)
 
     # Frame for each button category
-    calc_frame = tk.Frame(window, bg='red')
+    calc_frame = tk.Frame(window, bg=MAIN_FRAME_COLOR)
     calc_frame.place(relx=0.225, rely=0.2, relwidth=0.75, relheight=0.65)
 
-    nutr_frame = tk.Frame(window, bg='green')
+    nutr_frame = tk.Frame(window, bg=MAIN_FRAME_COLOR)
     nutr_frame.place(relx=0.225, rely=0.2, relwidth=0.75, relheight=0.65)
 
-    tips_frame = tk.Frame(window, bg='yellow')
+    tips_frame = tk.Frame(window, bg=MAIN_FRAME_COLOR)
     tips_frame.place(relx=0.225, rely=0.2, relwidth=0.75, relheight=0.65)
 
-    slides_frame = tk.Frame(window, bg='blue')
+    slides_frame = tk.Frame(window, bg=MAIN_FRAME_COLOR)
     slides_frame.place(relx=0.225, rely=0.2, relwidth=0.75, relheight=0.65)
 
     # Button frame containing all buttons
-    button_frame = tk.Frame(window, bg="green")
+    button_frame = tk.Frame(window, bg=MAIN_FRAME_COLOR)
     button_frame.place(relx=0.025, rely=0.2, relwidth=0.2, relheight=0.65)
 
-    # diet_tabs(frame)
+    calculator_site_content(calc_frame)
+    diet_tabs(nutr_frame)
     # Creating buttons with butt() and naming them
-    butt('Calculator', button_frame, calc_frame)
-    butt('Nutrition', button_frame, nutr_frame)
-    butt('Tips & Tricks', button_frame, tips_frame)
-    butt('Slides', button_frame, slides_frame)
-
+    butt("Calculator", button_frame, calc_frame)
+    butt("Nutrition", button_frame, nutr_frame)
+    butt("Tips & Tricks", button_frame, tips_frame)
+    butt("Slides", button_frame, slides_frame)
 
     window.resizable(True, True)
     window.mainloop()
+
+
+# Creating buttons for each category. Buttons are lined up one on the side.
+def butt(btn_text, frame, raise_frame):
+    btn = button(
+        frame,
+        text=btn_text,
+        height=125,
+        background="#e5c5c8",
+        activebackground="orange",
+        # activeforeground="black",
+        font=("Arial", 24),
+        relief="raised",
+        command=lambda: swap_frames(raise_frame),
+    )
+    btn.pack(fill="x")
 
 
 # Rounds number > = 0.5 up, else down
@@ -61,6 +76,7 @@ def round_half_up(n, decimals=0):
 
 def swap_frames(frame):
     frame.tkraise()
+
 
 # Calculates daily intakes and displays them on the screen
 def weight_calc(frame, weight):
@@ -83,7 +99,7 @@ def weight_calc(frame, weight):
 
 
 # Generates label, entry box and submit button for weight input
-def weight_group(calc_frame):
+def calculator_site_content(calc_frame):
     # Instructions Label
     instructions = tk.Label(
         calc_frame,
@@ -113,12 +129,16 @@ def weight_group(calc_frame):
         bg="#5ddeef",
         activebackground="#4285f4",
         font=("Arial", 14),
-        command=lambda:weight_calc(calc_frame, weight_entry.get()),
+        command=lambda: weight_calc(calc_frame, weight_entry.get()),
     )
     weight_btn.pack(pady=10)
 
-    #additional information
-    note = tk.Label(calc_frame, text='*All numbers are rounded to the nearest ones place', bg=MAIN_FRAME_COLOR)
+    # additional information
+    note = tk.Label(
+        calc_frame,
+        text="*All numbers are rounded to the nearest ones place",
+        bg=MAIN_FRAME_COLOR,
+    )
     note.place(relx=0.05, rely=0.9)
 
 
@@ -129,7 +149,7 @@ def diet_tabs(frame):
     notebook.pack()
 
     # Creating frame for each tab
-    good_foods_frame = tk.Frame(notebook, width=900, height=500, bg="olive")
+    good_foods_frame = tk.Frame(notebook, width=900, height=500, bg=MAIN_FRAME_COLOR)
     bad_foods_frame = tk.Frame(notebook, width=900, height=500, bg="red")
     nutrition_frame = tk.Frame(notebook, width=900, height=500, bg="orange")
 
@@ -142,21 +162,64 @@ def diet_tabs(frame):
         notebook.add(frame, text=tab_names[i])
         i += 1
 
+    title = tk.Label(
+        good_foods_frame,
+        text="Low levels of phosphorous and potassium foods",
+        font=("Arial", 18),
+        bg=MAIN_FRAME_COLOR,
+    ).pack(pady=25)
 
-# Creating buttons for each category. Buttons are lined up one on the side.
-def butt(btn_text, frame, raise_frame):
-    btn = button(
-        frame,
-        text=btn_text,
-        height=125,
-        background="#e5c5c8",
-        activebackground="orange",
-        # activeforeground="black",
-        font=("Arial", 24),
-        relief="raised",
-        command=lambda:swap_frames(raise_frame)
-    )
-    btn.pack(fill="x")
+    g_labels_frame_left = tk.Frame(good_foods_frame, bg=MAIN_FRAME_COLOR)
+    g_labels_frame_left.place(relx=0.1, rely=0.2, relwidth=0.4)
+
+    good_food_list = [
+        "Zucchini",
+        "Cucumbers",
+        "Blueberries",
+        "Apple",
+        "Salads",
+        "Couscous",
+        "lean Meat",
+        "most Fish",
+        "Cauliflower",
+        'Olive Oil',
+        "Butter",
+    ]
+    for item in good_food_list:
+        good_food_labels = tk.Label(
+            g_labels_frame_left,
+            text=item,
+            font=("Arial", 16),
+            bg=MAIN_FRAME_COLOR,
+            anchor="w",
+        )
+        good_food_labels.pack()
+
+    g_labels_frame_right = tk.Frame(good_foods_frame, bg=MAIN_FRAME_COLOR)
+    g_labels_frame_right.place(relx=0.5, rely=0.2, relwidth=0.4)
+
+    g_list2 = [
+        "Radish",
+        "green Pepper",
+        "Strawberries",
+        "Orange",
+        "Cream",
+        "Mozzarella",
+        "Onion",
+        "Garlic",
+        "Eggs",
+        "Watermelon",
+        "Honey"
+    ]
+    for item in g_list2:
+        g_food_right = tk.Label(
+            g_labels_frame_right,
+            text=item,
+            font=("Arial", 16),
+            bg=MAIN_FRAME_COLOR,
+            anchor="w",
+        )
+        g_food_right.pack()
 
 
 if __name__ == "__main__":
