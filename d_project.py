@@ -30,11 +30,14 @@ def main():
     nutr_frame = tk.Frame(window, bg=MAIN_FRAME_COLOR)
     nutr_frame.place(relx=0.225, rely=0.2, relwidth=0.75, relheight=0.65)
 
-    tips_frame = tk.Frame(window, bg=MAIN_FRAME_COLOR)
+    tips_frame = tk.Frame(window, bg='light blue')
     tips_frame.place(relx=0.225, rely=0.2, relwidth=0.75, relheight=0.65)
 
-    slides_frame = tk.Frame(window, bg=MAIN_FRAME_COLOR)
+    slides_frame = tk.Frame(window, bg='yellow')
     slides_frame.place(relx=0.225, rely=0.2, relwidth=0.75, relheight=0.65)
+
+    intro_frame = tk.Frame(window, bg='olive')
+    intro_frame.place(relx=0.225, rely=0.2, relwidth=0.75, relheight=0.65)
 
     # Button frame containing all buttons
     button_frame = tk.Frame(window, bg=MAIN_FRAME_COLOR)
@@ -43,6 +46,7 @@ def main():
     calculator_site_content(calc_frame)
     diet_tabs(nutr_frame)
     # Creating buttons with butt() and naming them
+    butt("Intro", button_frame, intro_frame)
     butt("Calculator", button_frame, calc_frame)
     butt("Nutrition", button_frame, nutr_frame)
     butt("Tips & Tricks", button_frame, tips_frame)
@@ -57,7 +61,7 @@ def butt(btn_text, frame, raise_frame):
     btn = button(
         frame,
         text=btn_text,
-        height=125,
+        height=100,
         background="#e5c5c8",
         activebackground="orange",
         # activeforeground="black",
@@ -65,7 +69,7 @@ def butt(btn_text, frame, raise_frame):
         relief="raised",
         command=lambda: swap_frames(raise_frame),
     )
-    btn.pack(fill="x")
+    btn.pack(fill="both")
 
 
 # Rounds number > = 0.5 up, else down
@@ -149,8 +153,8 @@ def diet_tabs(frame):
     notebook.pack()
 
     # Creating frame for each tab
-    good_foods_frame = tk.Frame(notebook, width=900, height=500, bg=MAIN_FRAME_COLOR)
-    bad_foods_frame = tk.Frame(notebook, width=900, height=500, bg="red")
+    good_foods_frame = tk.Frame(notebook, width=900, height=500, bg='#26c96f')
+    bad_foods_frame = tk.Frame(notebook, width=900, height=500, bg='#f9a08b')
     nutrition_frame = tk.Frame(notebook, width=900, height=500, bg="orange")
 
     # Packing each frame into notebook frame and naming each tab
@@ -161,18 +165,18 @@ def diet_tabs(frame):
         frame.pack(fill="both", expand=1)
         notebook.add(frame, text=tab_names[i])
         i += 1
-
+    # Recommended Foods Tab
     title = tk.Label(
         good_foods_frame,
         text="Low levels of phosphorous and potassium foods",
         font=("Arial", 18),
-        bg=MAIN_FRAME_COLOR,
+        bg='#26c96f',
     ).pack(pady=25)
 
     g_labels_frame_left = tk.Frame(good_foods_frame, bg=MAIN_FRAME_COLOR)
     g_labels_frame_left.place(relx=0.1, rely=0.2, relwidth=0.4)
 
-    good_food_list = [
+    g_list1 = [
         "Zucchini",
         "Cucumbers",
         "Blueberries",
@@ -185,15 +189,15 @@ def diet_tabs(frame):
         'Olive Oil',
         "Butter",
     ]
-    for item in good_food_list:
-        good_food_labels = tk.Label(
+    for item in g_list1:
+        g_food_left = tk.Label(
             g_labels_frame_left,
             text=item,
             font=("Arial", 16),
             bg=MAIN_FRAME_COLOR,
             anchor="w",
         )
-        good_food_labels.pack()
+        g_food_left.pack()
 
     g_labels_frame_right = tk.Frame(good_foods_frame, bg=MAIN_FRAME_COLOR)
     g_labels_frame_right.place(relx=0.5, rely=0.2, relwidth=0.4)
@@ -220,6 +224,66 @@ def diet_tabs(frame):
             anchor="w",
         )
         g_food_right.pack()
+
+    # Foods to Avoid Tab
+    title = tk.Label(
+        bad_foods_frame,
+        text="High levels of phosphorous and potassium foods",
+        font=("Arial", 18),
+        bg='#f9a08b',
+    ).pack(pady=25)
+
+    b_labels_frame_left = tk.Frame(bad_foods_frame, bg=MAIN_FRAME_COLOR)
+    b_labels_frame_left.place(relx=0.1, rely=0.2, relwidth=0.4)
+
+    b_list1 = [
+        "Feta, Parmesan, Cheddar etc.",
+        "Milk",
+        "Sausages",
+        "Smoked Fish or Meat",
+        "Processed Foods",
+        "Potatoes",
+        "Offal",
+        "Salmon",
+        "Canned Fish",
+        'Saturated Fat',
+        "Nuts",
+    ]
+    for item in b_list1:
+        b_food_left = tk.Label(
+            b_labels_frame_left,
+            text=item,
+            font=("Arial", 16),
+            bg=MAIN_FRAME_COLOR,
+            anchor="w",
+        )
+        b_food_left.pack()
+
+    b_labels_frame_right = tk.Frame(bad_foods_frame, bg=MAIN_FRAME_COLOR)
+    b_labels_frame_right.place(relx=0.5, rely=0.2, relwidth=0.4)
+
+    b_list2 = [
+        "Chocolate",
+        "Nougat",
+        "Marzipan",
+        "Undiluted Fruit Juice",
+        "Vegetable Juice",
+        "Ketchup",
+        "Mayonnaise",
+        "Tzatziki",
+        "Curry",
+        "Aubergine",
+        "Salt, Pepper"
+    ]
+    for item in b_list2:
+        b_food_right = tk.Label(
+            b_labels_frame_right,
+            text=item,
+            font=("Arial", 16),
+            bg=MAIN_FRAME_COLOR,
+            anchor="w",
+        )
+        b_food_right.pack()
 
 
 if __name__ == "__main__":
