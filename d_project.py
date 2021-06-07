@@ -22,7 +22,7 @@ def main():
         bg="#bedddc",
         font=("Arial", 32, "bold"),
     )
-    header.place(relx=0.35, rely=0.1)
+    header.place(relx=0.42, rely=0.1)
 
     # Content frame for each category
     calc_frame = tk.Frame(window, bg=MAIN_FRAME_COLOR)
@@ -34,7 +34,7 @@ def main():
     tips_frame = tk.Frame(window, bg=MAIN_FRAME_COLOR)
     tips_frame.place(relx=0.225, rely=0.2, relwidth=0.75, relheight=0.65)
 
-    slides_frame = tk.Frame(window, bg="yellow")
+    slides_frame = tk.Frame(window, bg=MAIN_FRAME_COLOR)
     slides_frame.place(relx=0.225, rely=0.2, relwidth=0.75, relheight=0.65)
 
     intro_frame = tk.Frame(window, bg=MAIN_FRAME_COLOR)
@@ -119,20 +119,33 @@ def calculating_weight(frame, weight):
     # Converts weight into float for accurate calculation with the help of round_half_up() function,
     # rounds the number and return as integer
     daily_calories = int(round_half_up(float(weight.strip().strip("kg")) * 30))
-    calories_result = f"Calories per day: {daily_calories}"
+    # Creates StringVar in order to update value with re-submission
+    cal_number = tk.StringVar(value=daily_calories)
+    cal_number.get()
+    calories = "Calories per day:"
 
     daily_protein = int(round_half_up(float(weight.strip().strip("kg")) * 1.2))
-    protein_result = f"Protein per day: {daily_protein}"
-    # Label that contains the results
+    prot_number = tk.StringVar(value=daily_protein)
+    prot_number.get()
+    protein = "Protein per day:"
+
+    # Calories and protein labels, excluding actual calculated value
+    calories_result = tk.Label(frame, text=calories, font=("Arial", 18),bg=MAIN_FRAME_COLOR)
+    calories_result.place(relx=0.36, rely=0.5, relwidth=0.2, relheight=0.1)
+
+    protein_result = tk.Label(frame, text=protein, font=("Arial", 18),bg=MAIN_FRAME_COLOR)
+    protein_result.place(relx=0.36, rely=0.6, relwidth=0.2, relheight=0.1)
+
+    # Automatic self updating StringVar printed to the screen
     display_calories = tk.Label(
-        frame, text=calories_result, bg=MAIN_FRAME_COLOR, font=("Arial", 18)
+        frame, textvariable=cal_number, bg=MAIN_FRAME_COLOR, font=("Arial", 18)
     )
-    display_calories.pack(pady=25)
+    display_calories.place(relx=0.56, rely=0.5, relwidth=0.1, relheight=0.1)
 
     display_protein = tk.Label(
-        frame, text=protein_result, bg=MAIN_FRAME_COLOR, font=("Arial", 18)
+        frame, textvariable=prot_number, bg=MAIN_FRAME_COLOR, font=("Arial", 18)
     )
-    display_protein.pack()
+    display_protein.place(relx=0.56, rely=0.6, relwidth=0.1, relheight=0.1)
 
 
 # Generates label, entry box and submit button for weight input
