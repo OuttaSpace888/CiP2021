@@ -30,21 +30,22 @@ def main():
     nutr_frame = tk.Frame(window, bg=MAIN_FRAME_COLOR)
     nutr_frame.place(relx=0.225, rely=0.2, relwidth=0.75, relheight=0.65)
 
-    tips_frame = tk.Frame(window, bg='light blue')
+    tips_frame = tk.Frame(window, bg="light blue")
     tips_frame.place(relx=0.225, rely=0.2, relwidth=0.75, relheight=0.65)
 
-    slides_frame = tk.Frame(window, bg='yellow')
+    slides_frame = tk.Frame(window, bg="yellow")
     slides_frame.place(relx=0.225, rely=0.2, relwidth=0.75, relheight=0.65)
 
-    intro_frame = tk.Frame(window, bg='olive')
+    intro_frame = tk.Frame(window, bg=MAIN_FRAME_COLOR)
     intro_frame.place(relx=0.225, rely=0.2, relwidth=0.75, relheight=0.65)
 
     # Button frame containing all buttons
     button_frame = tk.Frame(window, bg=MAIN_FRAME_COLOR)
     button_frame.place(relx=0.025, rely=0.2, relwidth=0.2, relheight=0.65)
 
-    calculator_site_content(calc_frame)
-    diet_tabs(nutr_frame)
+    intro_content(intro_frame)
+    calculator_content(calc_frame)
+    nutrition_tabs(nutr_frame)
     # Creating buttons with butt() and naming them
     butt("Intro", button_frame, intro_frame)
     butt("Calculator", button_frame, calc_frame)
@@ -54,6 +55,16 @@ def main():
 
     window.resizable(True, True)
     window.mainloop()
+
+
+# Rounds number > = 0.5 up, else down
+def round_half_up(n, decimals=0):
+    multiplier = 10 ** decimals
+    return math.floor(n * multiplier + 0.5) / multiplier
+
+
+def swap_frames(frame):
+    frame.tkraise()
 
 
 # Creating buttons for each category. Buttons are lined up one on the side.
@@ -72,18 +83,27 @@ def butt(btn_text, frame, raise_frame):
     btn.pack(fill="both")
 
 
-# Rounds number > = 0.5 up, else down
-def round_half_up(n, decimals=0):
-    multiplier = 10 ** decimals
-    return math.floor(n * multiplier + 0.5) / multiplier
+def intro_content(frame):
+    title = tk.Label(
+        frame,
+        text="Welcome to the Dialysis Nutrition App!",
+        bg=MAIN_FRAME_COLOR,
+        font=("Arial", 24, "bold"),
+    ).pack(pady=30)
 
-
-def swap_frames(frame):
-    frame.tkraise()
+    intro_text = "Here you can find recommended foods to eat for dialysis patients as well as which foods to avoid. You can also find nutrition information for individual food items of your choice with the built in API!\n" \
+                 "\nUse the calculator to determine your daily energy and protein intake for a balanced diet.\n" \
+                 "\nCheck out the other tabs for additional useful information that can help you consume your favorite foods in a safe way!"
+    message = tk.Message(
+        frame,
+        text=intro_text,
+        font=("Arial", 18),
+        bg=MAIN_FRAME_COLOR,
+    ).pack(pady=30)
 
 
 # Calculates daily intakes and displays them on the screen
-def weight_calc(frame, weight):
+def calculating_weight(frame, weight):
     # Converts weight into float for accurate calculation, rounds the number and return as integer
     daily_calories = int(round_half_up(float(weight.strip().strip("kg")) * 30))
     calories_result = f"Calories per day: {daily_calories}"
@@ -103,7 +123,7 @@ def weight_calc(frame, weight):
 
 
 # Generates label, entry box and submit button for weight input
-def calculator_site_content(calc_frame):
+def calculator_content(calc_frame):
     # Instructions Label
     instructions = tk.Label(
         calc_frame,
@@ -133,7 +153,7 @@ def calculator_site_content(calc_frame):
         bg="#5ddeef",
         activebackground="#4285f4",
         font=("Arial", 14),
-        command=lambda: weight_calc(calc_frame, weight_entry.get()),
+        command=lambda: calculating_weight(calc_frame, weight_entry.get()),
     )
     weight_btn.pack(pady=10)
 
@@ -148,13 +168,13 @@ def calculator_site_content(calc_frame):
 
 # Generating tabs to divide the diet section into 3 parts
 # without adding more buttons and using more space
-def diet_tabs(frame):
+def nutrition_tabs(frame):
     notebook = ttk.Notebook(frame)
     notebook.pack()
 
     # Creating frame for each tab
-    good_foods_frame = tk.Frame(notebook, width=900, height=500, bg='#26c96f')
-    bad_foods_frame = tk.Frame(notebook, width=900, height=500, bg='#f9a08b')
+    good_foods_frame = tk.Frame(notebook, width=900, height=500, bg="#26c96f")
+    bad_foods_frame = tk.Frame(notebook, width=900, height=500, bg="#f9a08b")
     nutrition_frame = tk.Frame(notebook, width=900, height=500, bg="orange")
 
     # Packing each frame into notebook frame and naming each tab
@@ -170,7 +190,7 @@ def diet_tabs(frame):
         good_foods_frame,
         text="Low levels of phosphorous and potassium foods",
         font=("Arial", 18),
-        bg='#26c96f',
+        bg="#26c96f",
     ).pack(pady=25)
 
     g_labels_frame_left = tk.Frame(good_foods_frame, bg=MAIN_FRAME_COLOR)
@@ -186,7 +206,7 @@ def diet_tabs(frame):
         "lean Meat",
         "most Fish",
         "Cauliflower",
-        'Olive Oil',
+        "Olive Oil",
         "Butter",
     ]
     for item in g_list1:
@@ -213,7 +233,7 @@ def diet_tabs(frame):
         "Garlic",
         "Eggs",
         "Watermelon",
-        "Honey"
+        "Honey",
     ]
     for item in g_list2:
         g_food_right = tk.Label(
@@ -230,7 +250,7 @@ def diet_tabs(frame):
         bad_foods_frame,
         text="High levels of phosphorous and potassium foods",
         font=("Arial", 18),
-        bg='#f9a08b',
+        bg="#f9a08b",
     ).pack(pady=25)
 
     b_labels_frame_left = tk.Frame(bad_foods_frame, bg=MAIN_FRAME_COLOR)
@@ -246,7 +266,7 @@ def diet_tabs(frame):
         "Offal",
         "Salmon",
         "Canned Fish",
-        'Saturated Fat',
+        "Saturated Fat",
         "Nuts",
     ]
     for item in b_list1:
@@ -273,7 +293,7 @@ def diet_tabs(frame):
         "Tzatziki",
         "Curry",
         "Aubergine",
-        "Salt, Pepper"
+        "Salt, Pepper",
     ]
     for item in b_list2:
         b_food_right = tk.Label(
