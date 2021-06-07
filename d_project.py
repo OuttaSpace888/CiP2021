@@ -6,7 +6,6 @@ import math
 
 MAIN_FRAME_COLOR = "#f4efeb"
 
-
 def main():
     window = tk.Tk()
     window.title("Dialysis Nutrition Information By Yihan Ye")
@@ -23,7 +22,7 @@ def main():
     )
     header.place(relx=0.35, rely=0.1)
 
-    # Frame for each button category
+    # Content frame for each category
     calc_frame = tk.Frame(window, bg=MAIN_FRAME_COLOR)
     calc_frame.place(relx=0.225, rely=0.2, relwidth=0.75, relheight=0.65)
 
@@ -42,18 +41,19 @@ def main():
     # Button frame containing all buttons
     button_frame = tk.Frame(window, bg=MAIN_FRAME_COLOR)
     button_frame.place(relx=0.025, rely=0.2, relwidth=0.2, relheight=0.65)
-
-    intro_content(intro_frame)
-    calculator_content(calc_frame)
-    nutrition_tabs(nutr_frame)
-    tips_content(tips_frame)
-    slides_content(slides_frame)
     # Creating buttons with butt() and naming them
     butt("Intro", button_frame, intro_frame)
     butt("Calculator", button_frame, calc_frame)
     butt("Nutrition", button_frame, nutr_frame)
     butt("Tips & Tricks", button_frame, tips_frame)
     butt("Slides", button_frame, slides_frame)
+
+    # Running all frames
+    intro_content(intro_frame)
+    calculator_content(calc_frame)
+    nutrition_tabs(nutr_frame)
+    tips_content(tips_frame)
+    slides_content(slides_frame)
 
     window.resizable(True, True)
     window.mainloop()
@@ -65,11 +65,13 @@ def round_half_up(n, decimals=0):
     return math.floor(n * multiplier + 0.5) / multiplier
 
 
+# Raises frame according to which button is pressed
 def swap_frames(frame):
     frame.tkraise()
 
 
-# Creating buttons for each category. Buttons are lined up one on the side.
+# Creating menu buttons for each category, which are lined up one on the side.
+# Including command for each button pressed
 def butt(btn_text, frame, raise_frame):
     btn = button(
         frame,
@@ -86,13 +88,15 @@ def butt(btn_text, frame, raise_frame):
 
 
 def intro_content(frame):
+    # Welcome Header for App
     title = tk.Label(
         frame,
         text="Welcome to the Dialysis Nutrition App!",
         bg=MAIN_FRAME_COLOR,
-        font=("Arial", 24, "bold"),
+        font=("Arial", 24, "bold")
     ).pack(pady=30)
 
+    # Introduction text created and packed into frame
     intro_text = (
         "Here you can find recommended foods to eat for dialysis patients as well as which foods to avoid. You can also find nutrition information for individual food items of your choice with the built in API!\n"
         "\nUse the calculator to determine your daily energy and protein intake for a balanced diet.\n"
@@ -105,16 +109,16 @@ def intro_content(frame):
         bg=MAIN_FRAME_COLOR,
     ).pack(pady=20)
 
-
 # Calculates daily intakes and displays them on the screen
 def calculating_weight(frame, weight):
-    # Converts weight into float for accurate calculation, rounds the number and return as integer
+    # Converts weight into float for accurate calculation with the help of round_half_up() function,
+    # rounds the number and return as integer
     daily_calories = int(round_half_up(float(weight.strip().strip("kg")) * 30))
     calories_result = f"Calories per day: {daily_calories}"
 
     daily_protein = int(round_half_up(float(weight.strip().strip("kg")) * 1.2))
     protein_result = f"Protein per day: {daily_protein}"
-
+    # Label that contains the results
     display_calories = tk.Label(
         frame, text=calories_result, bg=MAIN_FRAME_COLOR, font=("Arial", 18)
     )
@@ -161,7 +165,7 @@ def calculator_content(calc_frame):
     )
     weight_btn.pack(pady=10)
 
-    # additional information
+    # additional note marked with '*'
     note = tk.Label(
         calc_frame,
         text="*All numbers are rounded to the nearest ones place",
@@ -170,9 +174,10 @@ def calculator_content(calc_frame):
     note.place(relx=0.05, rely=0.9)
 
 
-# Generating tabs to divide the diet section into 3 parts
+# Generating tabs to divide the diet section into 4 parts
 # without adding more buttons and using more space
 def nutrition_tabs(frame):
+    # Creating notebook for tabs
     notebook = ttk.Notebook(frame)
     notebook.pack()
 
@@ -180,9 +185,9 @@ def nutrition_tabs(frame):
     intake_frame = tk.Frame(notebook, width=900, height=500, bg=MAIN_FRAME_COLOR)
     good_foods_frame = tk.Frame(notebook, width=900, height=500, bg="#5ece08")
     bad_foods_frame = tk.Frame(notebook, width=900, height=500, bg="#f9a08b")
-    api_frame = tk.Frame(notebook, width=900, height=500, bg="orange")
+    api_frame = tk.Frame(notebook, width=900, height=500, bg=MAIN_FRAME_COLOR)
 
-    # Packing each frame into notebook frame and naming each tab
+    # Packing each tab frame into notebook frame and naming each tab
     frames = [intake_frame, good_foods_frame, bad_foods_frame, api_frame]
     tab_names = ["Daily Intake", "Recommended Foods", "Foods to Avoid", "Nutrition API"]
     i = 0
@@ -191,15 +196,56 @@ def nutrition_tabs(frame):
         notebook.add(frame, text=tab_names[i])
         i += 1
 
-    # Daily Intake Tab
+    # Daily Intake Tab Section
+    # Tab Label for Daily
     intake_title = tk.Label(
         intake_frame,
         text="Daily Nutrients Guideline",
-        font=("Arial", 18),
+        font=("Arial", 20),
         bg=MAIN_FRAME_COLOR,
     ).pack(pady=25)
 
-    # Recommended Foods Tab
+    # Daily Frames Section
+    left_frame = tk.Frame(intake_frame, bg=MAIN_FRAME_COLOR)
+    left_frame.place(relx=0.25, rely=0.2, relwidth=0.25, relheight=0.8)
+    right_frame = tk.Frame(intake_frame, bg=MAIN_FRAME_COLOR)
+    right_frame.place(relx=0.5, rely=0.2, relwidth=0.5, relheight=0.8)
+
+    # Nutrients dictionary for creating chart.
+    # Key => left, Value => right
+    daily_nutrients = {
+        "Calories": "30cal/kg per day",
+        "Protein": "1,2g/kg per day",
+        "Liquid": "500ml + residual excretion/24h",
+        "Salt": "5-6g salt per day",
+        "Potassium": "2000-2500mg per day",
+        "Phosphorous": "1000-1400mg per day"
+    }
+    l_y = 0.1
+    for point in daily_nutrients:
+        point = tk.Label(
+            left_frame,
+            text=point,
+            font=("Arial", 18, 'bold'),
+            justify="left",
+            bg=MAIN_FRAME_COLOR,
+        )
+        point.place(relx=0.1, rely=l_y)
+        l_y += 0.1
+
+    r_y = 0.1
+    for point in daily_nutrients:
+        point = tk.Label(
+            right_frame,
+            text=daily_nutrients[point],
+            font=("Arial", 18),
+            justify="left",
+            bg=MAIN_FRAME_COLOR,
+        )
+        point.place(relx=0.1, rely=r_y)
+        r_y += 0.1
+
+    # Recommended Foods Tab Section
     low_title = tk.Label(
         good_foods_frame,
         text="Low levels of phosphorous and potassium foods",
@@ -207,34 +253,40 @@ def nutrition_tabs(frame):
         bg="#5ece08",
     ).pack(pady=25)
 
-    g_labels_frame_left = tk.Frame(good_foods_frame, bg=MAIN_FRAME_COLOR)
+    # Recommended food frames
+    g_labels_frame_left = tk.Frame(good_foods_frame, bg='#5ece08')
     g_labels_frame_left.place(relx=0.1, rely=0.2, relwidth=0.4)
+    g_labels_frame_right = tk.Frame(good_foods_frame, bg='#5ece08')
+    g_labels_frame_right.place(relx=0.5, rely=0.2, relwidth=0.4)
+    # Food to Avoid frames
+    b_labels_frame_left = tk.Frame(bad_foods_frame, bg="#f9a08b")
+    b_labels_frame_left.place(relx=0.1, rely=0.2, relwidth=0.4)
+    b_labels_frame_right = tk.Frame(bad_foods_frame, bg="#f9a08b")
+    b_labels_frame_right.place(relx=0.5, rely=0.2, relwidth=0.4)
 
-    g_list1 = [
-        "Zucchini, Cucumbers",
-        "Lemons, Lime",
-        "Blueberries",
-        "Apple, Pears",
-        "Salads",
-        "Couscous",
-        "lean Meat",
-        "most Fish",
-        "Cauliflower",
-        "Olive Oil, Butter",
-        "Mushrooms",
-    ]
+    # g_list1 = [
+    #     "Zucchini, Cucumbers",
+    #     "Lemons, Lime",
+    #     "Blueberries",
+    #     "Apple, Pears",
+    #     "Salads",
+    #     "Couscous",
+    #     "lean Meat",
+    #     "most Fish",
+    #     "Cauliflower",
+    #     "Olive Oil, Butter",
+    #     "Mushrooms",
+    # ]
+    
     for item in g_list1:
         g_food_left = tk.Label(
             g_labels_frame_left,
             text=item,
             font=("Arial", 16),
-            bg=MAIN_FRAME_COLOR,
+            bg="#5ece08",
             anchor="w",
         )
         g_food_left.pack()
-
-    g_labels_frame_right = tk.Frame(good_foods_frame, bg=MAIN_FRAME_COLOR)
-    g_labels_frame_right.place(relx=0.5, rely=0.2, relwidth=0.4)
 
     g_list2 = [
         "Radish, Celery",
@@ -254,7 +306,7 @@ def nutrition_tabs(frame):
             g_labels_frame_right,
             text=item,
             font=("Arial", 16),
-            bg=MAIN_FRAME_COLOR,
+            bg="#5ece08",
             anchor="w",
         )
         g_food_right.pack()
@@ -267,9 +319,6 @@ def nutrition_tabs(frame):
         bg="#f9a08b",
     ).pack(pady=25)
 
-    b_labels_frame_left = tk.Frame(bad_foods_frame, bg=MAIN_FRAME_COLOR)
-    b_labels_frame_left.place(relx=0.1, rely=0.2, relwidth=0.4)
-
     b_list1 = [
         "Feta, Parmesan, Cheddar etc.",
         "Most Dairy Products",
@@ -281,20 +330,17 @@ def nutrition_tabs(frame):
         "Olives,Pickles, Relish",
         "Canned Fish, Meat, Beans",
         "Saturated Fat",
-        "Coconuts, Nuts, Dates",
+        "Coconuts, Nuts",
     ]
     for item in b_list1:
         b_food_left = tk.Label(
             b_labels_frame_left,
             text=item,
             font=("Arial", 16),
-            bg=MAIN_FRAME_COLOR,
+            bg="#f9a08b",
             anchor="w",
         )
         b_food_left.pack()
-
-    b_labels_frame_right = tk.Frame(bad_foods_frame, bg=MAIN_FRAME_COLOR)
-    b_labels_frame_right.place(relx=0.5, rely=0.2, relwidth=0.4)
 
     b_list2 = [
         "Chocolate",
@@ -306,7 +352,7 @@ def nutrition_tabs(frame):
         "Tee, Cola",
         "Tzatziki",
         "Bananas, Kiwis",
-        "Aubergine",
+        "Dates, Figs",
         "Avocados",
     ]
     for item in b_list2:
@@ -314,23 +360,98 @@ def nutrition_tabs(frame):
             b_labels_frame_right,
             text=item,
             font=("Arial", 16),
-            bg=MAIN_FRAME_COLOR,
+            bg="#f9a08b",
             anchor="w",
         )
         b_food_right.pack()
 
 
 def tips_content(frame):
-    title = tk.Label(
-        frame, text="Useful Insights", font=("Arial", 24, "bold"), bg=MAIN_FRAME_COLOR
+    prep_title = tk.Label(
+        frame,
+        text="Important Things to Note",
+        font=("Arial", 24, "bold"),
+        bg=MAIN_FRAME_COLOR,
     ).pack(pady=30)
 
-    frame_names =['prep_tips_frame', 'seasoning_frame', 'other_info_frame']
+    prep_tips_frame = tk.Frame(frame, bg=MAIN_FRAME_COLOR)
+    prep_tips_frame.place(relx=0.05, rely=0.2, relwidth=0.3, relheight=0.7)
+    seasoning_frame = tk.Frame(frame, bg=MAIN_FRAME_COLOR)
+    seasoning_frame.place(relx=0.35, rely=0.2, relwidth=0.3, relheight=0.7)
+    other__info_frame = tk.Frame(frame, bg=MAIN_FRAME_COLOR)
+    other__info_frame.place(relx=0.65, rely=0.2, relwidth=0.31, relheight=0.7)
 
-    prep_tips_frame = tk.Frame(frame, bg='orange').place(relx=0.05, rely=0.2, relwidth=0.3, relheight=0.7)
-    seasoning_frame = tk.Frame(frame, bg='yellow').place(relx=0.35, rely=0.2, relwidth=0.3, relheight=0.7)
-    other__info_frame = tk.Frame(frame, bg='light blue').place(relx=0.65, rely=0.2, relwidth=0.3, relheight=0.7)
+    prep_header = tk.Label(
+        prep_tips_frame,
+        text="Decreasing phosphorous\nlevels in food",
+        font=("Arial", 16, "bold"),
+        bg=MAIN_FRAME_COLOR,
+    ).pack(pady=10)
+    seasoning_header = tk.Label(
+        seasoning_frame,
+        text="Salt & Pepper Substitute",
+        font=("Arial", 16, "bold"),
+        bg=MAIN_FRAME_COLOR,
+    ).pack(pady=10)
+    others_header = tk.Label(
+        other__info_frame,
+        text="Additional Insights",
+        font=("Arial", 16, "bold"),
+        bg=MAIN_FRAME_COLOR,
+    ).pack(pady=10)
 
+    prep_content = {
+        "first": "- throw out cooking water\n  and change while cooking",
+        "second": "- throw away canned\n  vegetables & meat juice",
+        "third": "- soak diced vegetables in\n  water before cooking",
+        "fourth": "- dice or shred vegetables\n  with high  phosphorous\n  content",
+    }
+    y = 0.2
+    for point in prep_content:
+        point = tk.Label(
+            prep_tips_frame,
+            text=prep_content[point],
+            font=("Arial", 16),
+            justify="left",
+            bg=MAIN_FRAME_COLOR,
+        )
+        point.place(relx=0.1, rely=y)
+        y += 0.2
+
+    salt_content = {
+        "first": "- Don't use salt substitute!\n  Use alternatives instead",
+        "second": "- Season food after it's\n  cooked for more control",
+        "third": "- Alternatives are:\n  Basil, Cilantro, Garlic\n  Oregano, Mint, Chives\n  Lemon, Parsley, Sage",
+    }
+    y = 0.2
+    for point in salt_content:
+        point = tk.Label(
+            seasoning_frame,
+            text=salt_content[point],
+            font=("Arial", 16),
+            justify="left",
+            bg=MAIN_FRAME_COLOR,
+        )
+        point.place(relx=0.1, rely=y)
+        y += 0.2
+
+    more_tips_content = {
+        "first": "- Avoid eating animal skin\n  (poultry)",
+        "second": "- Try not to eat egss more\n   than 3x per week",
+        "third": " - Pre-fill your water bottle\n    for the entire day",
+        "fourth": " - Don't forget food contains\n    water as well!\n   (fruits, soup, ice cream)",
+    }
+    y = 0.2
+    for point in more_tips_content:
+        point = tk.Label(
+            other__info_frame,
+            text=more_tips_content[point],
+            font=("Arial", 16),
+            justify="left",
+            bg=MAIN_FRAME_COLOR,
+        )
+        point.place(relx=0.1, rely=y)
+        y += 0.2
 
 
 def slides_content(frame):
