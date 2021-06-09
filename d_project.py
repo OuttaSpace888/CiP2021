@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkmacosx import Button as button
 import math
+import requests
 
 
 MAIN_FRAME_COLOR = "#f4efeb"
@@ -192,6 +193,12 @@ def calculator_content(calc_frame):
     note.place(relx=0.05, rely=0.9)
 
 
+def getting_api(food):
+    nutrients_key = '1d5ce6b0b3bc443b8ed3eeedce895771'
+    url = 'https://nutrition-api.esha.com/nutrients'
+    params = {'APPID': nutrients_key, 'q': food}
+
+
 # Generating tabs to divide the diet section into 4 parts
 # without adding more buttons and using more space
 def nutrition_tabs(frame):
@@ -203,7 +210,7 @@ def nutrition_tabs(frame):
     intake_frame = tk.Frame(notebook, width=900, height=500, bg=MAIN_FRAME_COLOR)
     good_foods_frame = tk.Frame(notebook, width=900, height=500, bg=GOOD_FOOD_COLOR)
     bad_foods_frame = tk.Frame(notebook, width=900, height=500, bg=BAD_FOOD_COLOR)
-    api_frame = tk.Frame(notebook, width=900, height=500, bg=MAIN_FRAME_COLOR)
+    api_frame = tk.Frame(notebook, width=900, height=500, bg='orange')
 
     # Packing each tab frame into notebook frame and naming each tab
     frames = [intake_frame, good_foods_frame, bad_foods_frame, api_frame]
@@ -358,6 +365,42 @@ def nutrition_tabs(frame):
         )
         b_food_right.pack()
 
+    # Nutrition API Section (could be improved with classes, same as calculator)
+    # Instructions Label
+    api_title = tk.Label(
+        api_frame,
+        text="Nutrition Search Engine",
+        font=("Arial", 20),
+        bg=MAIN_FRAME_COLOR,
+    )
+    api_title.pack(pady=25)
+
+    # Enter weight, label
+    instructions = tk.Label(
+        api_frame,
+        text="Type in the food you are looking for",
+        font=("Arial", 18),
+        bg=MAIN_FRAME_COLOR,
+    )
+    instructions.pack(pady=10)
+
+    # Weight entry box
+    food_entry = tk.Entry(api_frame)
+    food_entry.pack(pady=10)
+
+    # Weight submit button
+    nutrition_btn = button(
+        api_frame,
+        text="Submit",
+        bg="#5ddeef",
+        activebackground="#4285f4",
+        font=("Arial", 14),
+        # command=lambda: calculating_weight(calc_frame, weight_entry.get()),
+    )
+    nutrition_btn.pack(pady=10)
+
+
+
 
 def tips_content(frame):
     prep_title = tk.Label(
@@ -366,32 +409,34 @@ def tips_content(frame):
         font=("Arial", 24, "bold"),
         bg=MAIN_FRAME_COLOR,
     ).pack(pady=30)
+    border_frame = tk.LabelFrame(frame, bg=MAIN_FRAME_COLOR)
+    border_frame.place(relx=0.05, rely=0.2, relwidth=0.9, relheight=0.7)
     # Generating 3 frames for each sub category
-    seasoning_frame = tk.Frame(frame, bg=MAIN_FRAME_COLOR)
-    seasoning_frame.place(relx=0.03, rely=0.2, relwidth=0.4, relheight=0.7)
-    prep_tips_frame = tk.Frame(frame, bg=MAIN_FRAME_COLOR)
-    prep_tips_frame.place(relx=0.35, rely=0.2, relwidth=0.35, relheight=0.7)
-    other__info_frame = tk.Frame(frame, bg=MAIN_FRAME_COLOR)
-    other__info_frame.place(relx=0.67, rely=0.2, relwidth=0.33, relheight=0.7)
+    seasoning_frame = tk.Frame(border_frame, bg=MAIN_FRAME_COLOR)
+    seasoning_frame.place(relx=0.03, rely=0.08, relwidth=0.4, relheight=0.85)
+    prep_tips_frame = tk.Frame(border_frame, bg=MAIN_FRAME_COLOR)
+    prep_tips_frame.place(relx=0.35, rely=0.08, relwidth=0.35, relheight=0.85)
+    other__info_frame = tk.Frame(border_frame, bg=MAIN_FRAME_COLOR)
+    other__info_frame.place(relx=0.67, rely=0.08, relwidth=0.33, relheight=0.85)
     # Headers for all 3 sub categories
     prep_header = tk.Label(
         prep_tips_frame,
-        text="Decreasing phosphorous\nlevels in food",
+        text="Decrease phosphorous\nlevels in food",
         font=("Arial", 16, "bold"),
         bg=MAIN_FRAME_COLOR,
-    ).place(relx=0.1, rely=0.02)
+    ).place(relx=0.06, rely=0.02)
     seasoning_header = tk.Label(
         seasoning_frame,
         text="Salt & Pepper Substitute",
         font=("Arial", 16, "bold"),
         bg=MAIN_FRAME_COLOR,
-    ).place(relx=0.1, rely=0.02)
+    ).place(relx=0.05, rely=0.02)
     others_header = tk.Label(
         other__info_frame,
         text="Additional Insights",
         font=("Arial", 16, "bold"),
         bg=MAIN_FRAME_COLOR,
-    ).place(relx=0.1, rely=0.02)
+    ).place(relx=0.08, rely=0.02)
 
     # Contents to fill each frame of each category
     salt_content = {
@@ -399,6 +444,7 @@ def tips_content(frame):
         "second": "- Don't use salt substitute!\n  Use alternatives instead",
         "third": "- Alternatives are:\n  Basil, Cilantro, Garlic\n  Oregano, Mint, Chives\n  Lemon, Parsley, Sage",
     }
+    # Salt content generator
     y = 0.2
     for point in salt_content:
         point = tk.Label(
@@ -408,17 +454,18 @@ def tips_content(frame):
             justify="left",
             bg=MAIN_FRAME_COLOR,
         )
-        point.place(relx=0.1, rely=y)
+        point.place(relx=0.05, rely=y)
         y += 0.2
     # Key => additional insights information
     # Value => decreasing phosphorous content
     additonal_and_prep_content = {
-        "- Avoid eating animal skin\n  (poultry)": "- Throw out cooking water\n  and change while cooking",
+        "- Avoid eating animal skin\n  (poultry)": "- Throw out cooking water\n  & change while cooking",
         "- Try not to eat egss more\n  than 3x per week": "- Throw away canned\n  vegetables & meat juice",
-        "- Pre-fill your water bottle\n  for the entire day": "- Soak diced vegetables in\n  water before cooking",
+        "- Pre-fill your water bottle\n  for the entire day": "- Soak diced vegetables\n  in  water before cooking",
         "- Don't forget food contains\n  water as well!\n  (fruits, soup, ice cream)": "- Dice or shred vegetables\n  with high  phosphorous\n  content",
     }
     y = 0.2
+    # Decreasing phosphorous level content generation
     for point in additonal_and_prep_content:
         point = tk.Label(
             prep_tips_frame,
@@ -427,9 +474,9 @@ def tips_content(frame):
             justify="left",
             bg=MAIN_FRAME_COLOR,
         )
-        point.place(relx=0.1, rely=y)
+        point.place(relx=0.06, rely=y)
         y += 0.2
-
+    # Additional info content
     y = 0.2
     for point in additonal_and_prep_content:
         point = tk.Label(
@@ -439,7 +486,7 @@ def tips_content(frame):
             justify="left",
             bg=MAIN_FRAME_COLOR,
         )
-        point.place(relx=0.1, rely=y)
+        point.place(relx=0.06, rely=y)
         y += 0.2
 
 
