@@ -45,6 +45,7 @@ class Intro(Page):
         )
         label.pack(pady=30)
 
+        # Border around text body and message generation
         border_frame = tk.LabelFrame(self, bg=MAIN_FRAME_COLOR)
         border_frame.pack()
         message = tk.Message(
@@ -83,8 +84,52 @@ class Information(Page):
         )
         label.pack(pady=30)
 
+        # Generates the border around the text body
         border_frame = tk.LabelFrame(self, bg="yellow")
         border_frame.place(relx=0.05, rely=0.2, relwidth=0.9, relheight=0.7)
+
+        # Creating frame for each information column/section
+        left_frame = self.sections(border_frame, 0.03)
+        middle_frame = self.sections(border_frame, 0.35)
+        right_frame = self.sections(border_frame, 0.67)
+
+        # Creating label for each section/column
+        left_header = self.headers(left_frame, "Salt & Pepper Substitute")
+        middle_header = self.headers(
+            middle_frame, "Decrease phosphorous\nlevels in food"
+        )
+        right_header = self.headers(right_frame, "Additional Insights")
+
+        # Contents to fill each frame of each category
+        salt_content = {
+            "first": "- Season food after it's\n  cooked for more control",
+            "second": "- Don't use salt substitute!\n  Use alternatives instead",
+            "third": "- Alternatives are:\n  Basil, Cilantro, Garlic\n  Oregano, Mint, Chives\n  Lemon, Parsley, Sage",
+        }
+        left_content = self.frame_contents(salt_content, left_frame)
+
+    def sections(self, frame, relx):
+        section_frame = tk.Frame(frame, bg="orange")
+        section_frame.place(relx=relx, rely=0.08, relwidth=0.3, relheight=0.85)
+
+    def headers(self, frame_position, text):
+        header = tk.Label(
+            frame_position, text=text, font=("Arial", 16, "bold"), bg=MAIN_FRAME_COLOR
+        )
+        header.place(relx=0.5, rely=0.02)
+
+    def frame_contents(self, frame, content):
+        y = 0.2
+        for point in content:
+            point = tk.Label(
+                frame,
+                text=content[point],
+                font=("Arial", 16),
+                justify="left",
+                bg=MAIN_FRAME_COLOR,
+            )
+            point.place(relx=0.06, rely=y)
+            y += 0.2
 
 
 class Recipe(Page):
