@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import Label, ttk
+from tkinter import ttk
 from tkmacosx import Button as button
 from io import BytesIO
 from PIL import Image, ImageTk
@@ -12,7 +12,7 @@ import math
 WINDOW_TITLE = "Dialysis Nutrition Information By Yihan Ye"
 RECIPE_IMAGE_WIDTH = 350
 RECIPE_IMAGE_HEIGHT = 300
-MAIN_WINDOW_SIZE = "900x900"
+MAIN_WINDOW_SIZE = "1000x1000"
 MAIN_WINDOW_COLOR = "#bedddc"
 MAIN_FRAME_COLOR = "#f4efeb"
 GOOD_FOOD_COLOR = "#9be281"
@@ -100,6 +100,7 @@ ADDITIONAL_CONTENT = [
 
 
 class Page(tk.Frame):
+    # Main content frame
     def __init__(self):
         tk.Frame.__init__(self, bg=MAIN_FRAME_COLOR)
 
@@ -139,20 +140,13 @@ class Intro(Page):
 class Calculator(Page):
     def __init__(self):
         Page.__init__(self)
-        label = AllLabels(
+        label = tk.Label(
             self,
-            "Calculate your daily energy and protein intake requirements.",
-            20,
-            "",
-            25,
+            text="Calculate your daily energy and protein intake requirements.",
+            font=("Arial", 20),
+            bg=MAIN_FRAME_COLOR,
         )
-        #  tk.Label(
-        #     self,
-        #     text,
-        #     font=("Arial", 20),
-        #     bg=MAIN_FRAME_COLOR,
-        # )
-        # label.pack(pady=25)
+        label.pack(pady=25)
 
 
 class Nutrients(Page):
@@ -160,22 +154,22 @@ class Nutrients(Page):
 
     def __init__(self):
         Page.__init__(self)
-        notebook = ttk.Notebook(self)
+        notebook = ttk.Notebook(self, width=1000, height=500)
         notebook.pack()
 
         # Creating each tab frame
         intake_frame = tk.Frame(notebook, width=900, height=500, bg=MAIN_FRAME_COLOR)
         good_foods_frame = tk.Frame(notebook, width=900, height=500, bg=GOOD_FOOD_COLOR)
         bad_foods_frame = tk.Frame(notebook, width=900, height=500, bg=BAD_FOOD_COLOR)
-        api_frame = tk.Frame(notebook, width=900, height=500, bg="orange")
+        # api_frame = tk.Frame(notebook, width=900, height=500, bg="orange")
 
         # Naming each tab
-        frames = [intake_frame, good_foods_frame, bad_foods_frame, api_frame]
+        frames = [intake_frame, good_foods_frame, bad_foods_frame]  # , api_frame]
         tab_names = [
             "Daily Intake",
             "Recommended Foods",
             "Foods to Avoid",
-            "Nutrition API",
+            # "Nutrition API",
         ]
         i = 0
         for frame in frames:
@@ -194,23 +188,28 @@ class Nutrients(Page):
             "High levels of phosphorous and potassium foods",
             BAD_FOOD_COLOR,
         )
-        api_title = self.tab_titles(api_frame, "Nutrition Search Engine")
+        # api_title = self.tab_titles(api_frame, "Nutrition Search Engine")
 
         # All Tab Inside Content Frames
         # Daily Intake Tab Frames
-        tab1_left = self.tab_content_frames(intake_frame, 0.25, 0.25, 0.8)
+        tab1_left = self.tab_content_frames(intake_frame, 0.1, 0.25, 0.8)
         tab1_right = self.tab_content_frames(intake_frame, 0.5, 0.5, 0.8)
         # Recommended Foods Frames
-        tab2_left = self.tab_content_frames(good_foods_frame)
-        tab2_left = self.tab_content_frames(good_foods_frame, 0.5)
+        tab2_left = self.tab_content_frames(good_foods_frame, 0.1, 0.4, 0.5)
+        tab2_right = self.tab_content_frames(good_foods_frame, 0.3, 0.4, 0.5)
         # Foods to Avoid Frames
-        tab3_left = self.tab_content_frames(bad_foods_frame)
-        tab3_left = self.tab_content_frames(bad_foods_frame, 0.5)
+        tab3_left = self.tab_content_frames(bad_foods_frame, 0.1, 0.4, 0.5)
+        tab3_right = self.tab_content_frames(bad_foods_frame, 0.3, 0.4, 0.5)
 
-        # Defininf Actual Tab Contents
+        # Defining Actual Tab Contents
+        daily_left = self.tab_body(tab1_left, DAILY_NUTR_LEFT)
+        daily_right = self.tab_body(tab1_right, DAILY_NUTR_RIGHT)
 
-        daily_left = self.tab_body(tab1_left, DAILY_NUTR_LEFT, 0.1)
-        daily_right = self.tab_body(tab1_right, DAILY_NUTR_RIGHT, 0.1)
+        good_left = self.tab_body(tab2_left, GOOD_LIST_LEFT)
+        good_right = self.tab_body(tab2_right, GOOD_LIST_RIGHT)
+
+        bad_left = self.tab_body(tab3_left, BAD_LIST_LEFT)
+        bad_right = self.tab_body(tab3_right, BAD_LIST_RIGHT)
 
     # Method for creating all tab content headers
     def tab_titles(self, frame, text, color=MAIN_FRAME_COLOR):
@@ -224,21 +223,28 @@ class Nutrients(Page):
 
     # Tab content frames generator
     def tab_content_frames(self, frame, relx=0.1, width=0.4, height=0):
-        content_frame = tk.Frame(frame, bg="red")
-        content_frame.place(relx=relx, rely=0.2, relwidth=width, relheight=height)
+        content_frame = tk.Frame(frame, bg=MAIN_FRAME_COLOR)
+        content_frame.place(relx=relx, rely=0.3, relwidth=width, relheight=height)
+        return content_frame
 
     # Generates all tab contents
-    def tab_body(self, frame, content, y=0):
-        for point in content:
-            point = tk.Label(
-                frame,
-                text=point,
-                font=("Arial", 18),
-                justify="left",
-                bg=MAIN_FRAME_COLOR,
-            )
-        point.place(relx=0.1, rely=y)
-        Nutrients.y_step += y
+    def tab_body(self, frame, content):
+        labels = []
+        for text in content:
+            label = tk.Label(frame, text=text, font=("Arial", 18), bg=MAIN_FRAME_COLOR)
+            label.pack()
+            labels.append(label)
+        return labels
+
+        # for point in content:
+        #     point = tk.Label(
+        #         frame,
+        #         text=point,
+        #         font=("Arial", 18, "bold"),
+        #         bg=MAIN_FRAME_COLOR,
+        #     )
+        # point.pack()
+        # return point
 
     # TODO: Try re-writing it with class method later
     # def tab_frames(self):
@@ -250,10 +256,16 @@ class Information(Page):
     def __init__(self):
         # Main Content Frame
         Page.__init__(self)
-        label = AllLabels(self, "Important Things to Note", 24, "bold", 30)
+        label = tk.Label(
+            self,
+            text="Important Things to Note",
+            font=("Arial", 24, "bold"),
+            bg=MAIN_FRAME_COLOR,
+        )
+        label.pack(pady=30)
 
         # Generates the border around the text body => box frame
-        border_frame = tk.LabelFrame(self, bg="yellow")
+        border_frame = tk.LabelFrame(self, bg=MAIN_FRAME_COLOR)
         border_frame.place(relx=0.05, rely=0.2, relwidth=0.9, relheight=0.7)
 
         # Creating frame for each information column/section => The 3 small frames!
@@ -262,27 +274,35 @@ class Information(Page):
         right_frame = self.sections(border_frame, 0.67)
 
         # Creating labels for each section/column
-        left_header = AllLabels(
-            border_frame, "Salt & Pepper Substitute", 16, "bold"
+        left_header = self.headers(
+            left_frame, "Salt & Pepper Substitute"
         )  # Attaches as expected inside the box frame
         # Won't attach to the small frames, instead uses the root window
-        middle_header = AllLabels(
-            middle_frame, "Decrease phosphorous\nlevels in food", 16, "bold"
+        middle_header = self.headers(
+            middle_frame, "Decrease phosphorous\nlevels in food"
         )
-        right_header = AllLabels(right_frame, "Additional Insights", 16, "bold")
+        right_header = self.headers(right_frame, "Additional Insights")
 
         # Contents to fill each frame of each category
         left_content = self.frame_contents(
-            border_frame, SALT_CONTENT
+            left_frame, SALT_CONTENT
         )  # Once again works in box frame
         # And NOT in the 3 small frames.
-        middle_content = self.frame_contents(border_frame, PHOSPHOROUS_CONTENT)
-        right_content = self.frame_contents(border_frame, ADDITIONAL_CONTENT)
+        middle_content = self.frame_contents(middle_frame, PHOSPHOROUS_CONTENT)
+        right_content = self.frame_contents(right_frame, ADDITIONAL_CONTENT)
 
     # Method I used to create the 3 small frames
     def sections(self, frame, relx):
         section_frame = tk.Frame(frame, bg=MAIN_FRAME_COLOR)
         section_frame.place(relx=relx, rely=0.08, relwidth=0.3, relheight=0.85)
+        return section_frame
+
+    # Header I used to create the header for each small frame
+    def headers(self, frame, text):
+        header = tk.Label(
+            frame, text=text, font=("Arial", 16, "bold"), bg=MAIN_FRAME_COLOR
+        )
+        header.pack()  # place(relx=0.5, rely=0.02)
 
     # Generates the body content of each small frame
     def frame_contents(self, frame, content):
@@ -293,7 +313,7 @@ class Information(Page):
                 text=point,
                 font=("Arial", 16),
                 justify="left",
-                bg="red",
+                bg=MAIN_FRAME_COLOR,
             )
             point.place(relx=0.06, rely=y)
             y += 0.2
@@ -320,15 +340,6 @@ class MenuButton(object):
             command=raise_content,
         )
         btn.pack(fill="both")
-
-
-class AllLabels(object):
-    # Labels generator, for all labels used in program
-    def __init__(self, frame, text, font_size, bold="", y=0):
-        header = tk.Label(
-            frame, text=text, font=("Arial", font_size, bold), bg=MAIN_FRAME_COLOR
-        )
-        header.pack(pady=y)  # place(relx=0.5, rely=0.02)
 
 
 class MainWindow(tk.Frame):
