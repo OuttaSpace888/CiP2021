@@ -148,10 +148,82 @@ class Calculator(Page):
         )
         label.pack(pady=25)
 
+        # Enter weight, label
+        weight_label = tk.Label(
+            self,
+            text="Enter your weight in kg:",
+            font=("Arial", 18),
+            bg=MAIN_FRAME_COLOR,
+        )
+        weight_label.pack(pady=10)
+
+        # Weight entry box
+        weight_entry = tk.Entry(self)
+        weight_entry.pack(pady=10)
+
+        # Weight submit button
+        weight_btn = button(
+            self,
+            text="Submit",
+            bg="#5ddeef",
+            activebackground="#4285f4",
+            font=("Arial", 14),
+            command=lambda: self.calculating_weight(self, weight_entry.get()),
+        )
+        weight_btn.pack(pady=10)
+
+        # additional note marked with '*'
+        note = tk.Label(
+            self,
+            text="*All numbers are rounded to the nearest ones place",
+            bg=MAIN_FRAME_COLOR,
+        )
+        note.place(relx=0.05, rely=0.9)
+
+    # Rounds number > = 0.5 up, else down
+    def round_half_up(self, n, decimals=0):
+        multiplier = 10 ** decimals
+        return math.floor(n * multiplier + 0.5) / multiplier
+
+    # Calculates daily intakes and displays them on the screen
+    def calculating_weight(self, frame, weight):
+        # Converts weight into float for accurate calculation with the help of round_half_up() function,
+        # rounds the number and return as integer
+        daily_calories = int(self.round_half_up(float(weight.strip().strip("kg")) * 30))
+        # Creates StringVar in order to update value with re-submission
+        cal_number = tk.StringVar(value=daily_calories)
+        cal_number.get()
+        calories = "Calories per day:"
+
+        daily_protein = int(self.round_half_up(float(weight.strip().strip("kg")) * 1.2))
+        prot_number = tk.StringVar(value=daily_protein)
+        prot_number.get()
+        protein = "Protein per day:"
+
+        # Calories and protein labels, excluding actual calculated value
+        calories_result = tk.Label(
+            frame, text=calories, font=("Arial", 18), bg=MAIN_FRAME_COLOR
+        )
+        calories_result.place(relx=0.36, rely=0.5, relwidth=0.2, relheight=0.1)
+
+        protein_result = tk.Label(
+            frame, text=protein, font=("Arial", 18), bg=MAIN_FRAME_COLOR
+        )
+        protein_result.place(relx=0.36, rely=0.6, relwidth=0.2, relheight=0.1)
+
+        # Automatic self updating StringVar printed to the screen
+        display_calories = tk.Label(
+            frame, textvariable=cal_number, bg=MAIN_FRAME_COLOR, font=("Arial", 18)
+        )
+        display_calories.place(relx=0.56, rely=0.5, relwidth=0.1, relheight=0.1)
+
+        display_protein = tk.Label(
+            frame, textvariable=prot_number, bg=MAIN_FRAME_COLOR, font=("Arial", 18)
+        )
+        display_protein.place(relx=0.56, rely=0.6, relwidth=0.1, relheight=0.1)
+
 
 class Nutrients(Page):
-    y_step = 0.1
-
     def __init__(self):
         Page.__init__(self)
         notebook = ttk.Notebook(self, width=1000, height=500)
@@ -236,20 +308,14 @@ class Nutrients(Page):
             labels.append(label)
         return labels
 
-        # for point in content:
-        #     point = tk.Label(
-        #         frame,
-        #         text=point,
-        #         font=("Arial", 18, "bold"),
-        #         bg=MAIN_FRAME_COLOR,
-        #     )
-        # point.pack()
-        # return point
-
     # TODO: Try re-writing it with class method later
     # def tab_frames(self):
     #     tabs = tk.Frame(self.notebook, width=900, height=500, bg="black")
     #     tabs.pack(fill="both", expand=1)
+
+
+class TabHeader(Page):
+    pass
 
 
 class Information(Page):
