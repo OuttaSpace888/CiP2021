@@ -137,6 +137,7 @@ class Intro(Page):
         message.pack(pady=20)
 
 
+# TODO: Put Calculator and Nutrients together
 class Calculator(Page):
     def __init__(self):
         Page.__init__(self)
@@ -223,7 +224,7 @@ class Calculator(Page):
         display_protein.place(relx=0.56, rely=0.6, relwidth=0.1, relheight=0.1)
 
 
-class Nutrients(Page):
+class Guidelines(Page):
     def __init__(self):
         Page.__init__(self)
         notebook = ttk.Notebook(self, width=1000, height=500)
@@ -249,7 +250,7 @@ class Nutrients(Page):
             i += 1
 
         # Header for each tab section
-        intake_title = self.tab_titles(intake_frame, "Daily Nutrients Guideline")
+        intake_title = self.tab_titles(intake_frame, "Daily Nutrition Guideline")
         good_foods_title = self.tab_titles(
             good_foods_frame,
             "Low levels of phosphorous and potassium foods",
@@ -296,7 +297,7 @@ class Nutrients(Page):
         title = tk.Label(
             frame,
             text=text,
-            font=("Arial", 20),
+            font=("Arial", 20, "bold"),
             bg=color,
         )
         title.pack(pady=25)
@@ -358,20 +359,14 @@ class Information(Page):
         right_frame = self.sections(border_frame, 0.67)
 
         # Creating labels for each section/column
-        left_header = self.headers(
-            left_frame, "Salt & Pepper Substitute"
-        )  # Attaches as expected inside the box frame
-        # Won't attach to the small frames, instead uses the root window
+        left_header = self.headers(left_frame, "Salt & Pepper Substitute")
         middle_header = self.headers(
             middle_frame, "Decrease phosphorous\nlevels in food"
         )
         right_header = self.headers(right_frame, "Additional Insights")
 
         # Contents to fill each frame of each category
-        left_content = self.frame_contents(
-            left_frame, SALT_CONTENT
-        )  # Once again works in box frame
-        # And NOT in the 3 small frames.
+        left_content = self.frame_contents(left_frame, SALT_CONTENT)
         middle_content = self.frame_contents(middle_frame, PHOSPHOROUS_CONTENT)
         right_content = self.frame_contents(right_frame, ADDITIONAL_CONTENT)
 
@@ -403,12 +398,55 @@ class Information(Page):
             y += 0.2
 
 
-class Recipe(Page):
-    # def __init__(self):
-    #     Page.__init__(self)
-    #     label = tk.Label(self, text="This is page 3")
-    #     label.pack(side="top", fill="both", expand=True)
-    pass
+# class InfoLeftFrame(Information):
+#     def __init__(self):
+#         Information.__init__(self)
+#         frame = self.sections(, 0.03)
+
+
+class Nutrients(Page):
+    def __init__(self):
+        Page.__init__(self)
+        label = tk.Label(
+            self,
+            text="Food Item Nutrition Finder",
+            font=("Arial", 20, "bold"),
+            bg=MAIN_FRAME_COLOR,
+        )
+        label.pack(pady=20)
+
+        instructions = tk.Message(
+            self,
+            text="Enter a food item and find its nutrition information for calories, protein, potassium and phosphorous:",
+            background=MAIN_FRAME_COLOR,
+            font=("Arial", 18),
+            justify="center",
+            aspect=800,
+        )
+        instructions.pack()
+
+        # Food item entry box
+        food_entry = tk.Entry(self)
+        food_entry.pack(pady=20)
+
+        # Submit button
+        btn = button(
+            self,
+            text="Submit",
+            bg="#5ddeef",
+            activebackground="#4285f4",
+            font=("Arial", 14),
+            # command=lambda: self.getting_api(self, food_entry.get()),
+        )
+        btn.pack(pady=10)
+
+        # additional note marked with '*'
+        note = tk.Label(
+            self,
+            text="*All Nutrion Information Are From USDA FoodData Central API",
+            bg=MAIN_FRAME_COLOR,
+        )
+        note.place(relx=0.05, rely=0.9)
 
 
 class MenuButton(object):
@@ -431,9 +469,9 @@ class MainWindow(tk.Frame):
         tk.Frame.__init__(self, frame)
         intro = Intro()
         calculator = Calculator()
-        nutrients = Nutrients()
+        guidelines = Guidelines()
         info = Information()
-        recipe = Recipe()
+        recipe = Nutrients()
 
         # App header placed into main window
         self.frame = frame
@@ -453,14 +491,17 @@ class MainWindow(tk.Frame):
 
         intro.place(in_=content_frame, x=0, y=0, relwidth=1, relheight=1)
         calculator.place(in_=content_frame, x=0, y=0, relwidth=1, relheight=1)
-        nutrients.place(in_=content_frame, x=0, y=0, relwidth=1, relheight=1)
+        guidelines.place(in_=content_frame, x=0, y=0, relwidth=1, relheight=1)
         info.place(in_=content_frame, x=0, y=0, relwidth=1, relheight=1)
+        recipe.place(in_=content_frame, x=0, y=0, relwidth=1, relheight=1)
 
         intro_btn = MenuButton(button_frame, "Intro", intro.show)
         calculator_btn = MenuButton(button_frame, "Calculator", calculator.show)
-        nutrients_btn = MenuButton(button_frame, "Nutrients", nutrients.show)
+        guidelines_btn = MenuButton(button_frame, "Guidelines", guidelines.show)
         info_btn = MenuButton(button_frame, "Tips & Tricks", info.show)
-        recipe_btn = MenuButton(button_frame, "Recipe", recipe.show)
+        recipe_btn = MenuButton(button_frame, "Nutrients", recipe.show)
+
+        intro.show()
 
 
 if __name__ == "__main__":
