@@ -55,16 +55,16 @@ GOOD_LIST_RIGHT = [
     "Cooked Rice, Pasta",
 ]
 BAD_LIST_LEFT = [
-    "Offal, Sausages, Salmon",
     "Smoked Fish or Meat",
+    "Offal, Sausages, Salmon",
     "Processed Foods",
-    "Potatoes",
-    "Ketchup, Mayonnaise",
-    "Canned Tomato Products/Juice",
-    "Olives, Pickles, Relish",
-    "Tzatziki",
     "Canned Fish, Meat, Beans",
+    "Ketchup, Mayonnaise",
     "Saturated Fat",
+    "Olives, Pickles, Relish",
+    "Potatoes",
+    "Tee, Cola",
+    "Tzatziki",
     "Avocados",
 ]
 BAD_LIST_RIGHT = [
@@ -73,7 +73,7 @@ BAD_LIST_RIGHT = [
     "Marzipan",
     "Undiluted Fruit Juice",
     "Vegetable Juice",
-    "Tee, Cola",
+    "Canned Tomato Products/Juice",
     "Bananas, Kiwis",
     "Dates, Figs",
     "Feta, Parmesan, Cheddar etc.",
@@ -255,7 +255,7 @@ class Nutrients(Page):
             "Low levels of phosphorous and potassium foods",
             GOOD_FOOD_COLOR,
         )
-        bad_foods_frame = self.tab_titles(
+        bad_foods_title = self.tab_titles(
             bad_foods_frame,
             "High levels of phosphorous and potassium foods",
             BAD_FOOD_COLOR,
@@ -264,24 +264,32 @@ class Nutrients(Page):
 
         # All Tab Inside Content Frames
         # Daily Intake Tab Frames
-        tab1_left = self.tab_content_frames(intake_frame, 0.1, 0.25, 0.8)
-        tab1_right = self.tab_content_frames(intake_frame, 0.5, 0.5, 0.8)
+        tab1_left = tk.Frame(intake_frame, bg=MAIN_FRAME_COLOR)
+        tab1_left.place(relx=0.25, rely=0.25, relwidth=0.2, relheight=0.6)
+        tab1_right = tk.Frame(intake_frame, bg=MAIN_FRAME_COLOR)
+        tab1_right.place(relx=0.5, rely=0.25, relwidth=0.4, relheight=0.6)
+
         # Recommended Foods Frames
-        tab2_left = self.tab_content_frames(good_foods_frame, 0.1, 0.4, 0.5)
-        tab2_right = self.tab_content_frames(good_foods_frame, 0.3, 0.4, 0.5)
+        tab2_left = self.tab_content_foods(good_foods_frame, GOOD_FOOD_COLOR)
+        tab2_right = self.tab_content_foods(good_foods_frame, GOOD_FOOD_COLOR, 0.5)
         # Foods to Avoid Frames
-        tab3_left = self.tab_content_frames(bad_foods_frame, 0.1, 0.4, 0.5)
-        tab3_right = self.tab_content_frames(bad_foods_frame, 0.3, 0.4, 0.5)
+        avoid_left = self.tab_content_foods(bad_foods_frame, BAD_FOOD_COLOR)
+        avoid_right = self.tab_content_foods(bad_foods_frame, BAD_FOOD_COLOR, 0.5)
 
         # Defining Actual Tab Contents
-        daily_left = self.tab_body(tab1_left, DAILY_NUTR_LEFT)
-        daily_right = self.tab_body(tab1_right, DAILY_NUTR_RIGHT)
 
-        good_left = self.tab_body(tab2_left, GOOD_LIST_LEFT)
-        good_right = self.tab_body(tab2_right, GOOD_LIST_RIGHT)
+        daily_left = self.daily_nutr_text(
+            tab1_left, DAILY_NUTR_LEFT, MAIN_FRAME_COLOR, "bold"
+        )
+        daily_right = self.daily_nutr_text(
+            tab1_right, DAILY_NUTR_RIGHT, MAIN_FRAME_COLOR
+        )
 
-        bad_left = self.tab_body(tab3_left, BAD_LIST_LEFT)
-        bad_right = self.tab_body(tab3_right, BAD_LIST_RIGHT)
+        good_left = self.tab_body(tab2_left, GOOD_LIST_LEFT, GOOD_FOOD_COLOR)
+        good_right = self.tab_body(tab2_right, GOOD_LIST_RIGHT, GOOD_FOOD_COLOR)
+
+        bad_left = self.tab_body(avoid_left, BAD_LIST_LEFT, BAD_FOOD_COLOR)
+        bad_right = self.tab_body(avoid_right, BAD_LIST_RIGHT, BAD_FOOD_COLOR)
 
     # Method for creating all tab content headers
     def tab_titles(self, frame, text, color=MAIN_FRAME_COLOR):
@@ -294,17 +302,27 @@ class Nutrients(Page):
         title.pack(pady=25)
 
     # Tab content frames generator
-    def tab_content_frames(self, frame, relx=0.1, width=0.4, height=0):
-        content_frame = tk.Frame(frame, bg=MAIN_FRAME_COLOR)
-        content_frame.place(relx=relx, rely=0.3, relwidth=width, relheight=height)
+    def tab_content_foods(self, frame, color, x=0.1):
+        content_frame = tk.Frame(frame, bg=color)
+        content_frame.place(relx=x, rely=0.2, relwidth=0.4)
         return content_frame
 
     # Generates all tab contents
-    def tab_body(self, frame, content):
+    def tab_body(self, frame, content, color):
         labels = []
         for text in content:
-            label = tk.Label(frame, text=text, font=("Arial", 18), bg=MAIN_FRAME_COLOR)
+            label = tk.Label(frame, text=text, font=("Arial", 18), bg=color)
             label.pack()
+            labels.append(label)
+        return labels
+
+    def daily_nutr_text(self, frame, content, color, bold=""):
+        y = 0.1
+        labels = []
+        for text in content:
+            label = tk.Label(frame, text=text, font=("Arial", 18, bold), bg=color)
+            label.place(relx=0.1, rely=y)
+            y += 0.1
             labels.append(label)
         return labels
 
