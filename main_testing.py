@@ -1,117 +1,21 @@
 import tkinter as tk
-from tkinter import Frame, ttk
+from tkinter import ttk
 from tkmacosx import Button as button
-from io import BytesIO
-from PIL import Image, ImageTk
-from py_edamam import PyEdamam
 import requests
-import webbrowser
 import math
-import json
 
-
-WINDOW_TITLE = "Dialysis Nutrition Information By Yihan Ye"
-RECIPE_IMAGE_WIDTH = 350
-RECIPE_IMAGE_HEIGHT = 300
-MAIN_WINDOW_SIZE = "1000x1000"
-MAIN_WINDOW_COLOR = "#bedddc"
-MAIN_FRAME_COLOR = "#f4efeb"
-GOOD_FOOD_COLOR = "#9be281"
-BAD_FOOD_COLOR = "#f9a08b"
-BTN_COLOR = "#e5c5c8"
-# Nutrition Tab Content Lists
-DAILY_NUTR_LEFT = ["Calories", "Salt", "Protein", "Potassium", "Phosphorous", "Liquid"]
-DAILY_NUTR_RIGHT = [
-    "30cal/kg per day",
-    "5-6g per day (including Sodium)",
-    "1,2g/kg per day",
-    "2000-2500mg per day",
-    "1000-1400mg per day",
-    "500ml + residual excretion/24h",
-]
-GOOD_LIST_LEFT = [
-    "Zucchini, Cucumbers",
-    "Lemons, Lime",
-    "Blueberries",
-    "Apple, Pears",
-    "Salads",
-    "Couscous",
-    "Lean Meat",
-    "Most Fish",
-    "Cauliflower",
-    "Olive Oil, Butter",
-    "Mushrooms",
-]
-GOOD_LIST_RIGHT = [
-    "Radish, Celery",
-    "Green Pepper",
-    "Strawberries",
-    "Carrots, Green Beans",
-    "Cream",
-    "Mozzarella",
-    "Onion, Garlic",
-    "Honey, Jam",
-    "Eggs",
-    "Watermelon",
-    "Cooked Rice, Pasta",
-]
-BAD_LIST_LEFT = [
-    "Smoked Fish or Meat",
-    "Offal, Sausages, Salmon",
-    "Processed Foods",
-    "Canned Fish, Meat, Beans",
-    "Ketchup, Mayonnaise",
-    "Saturated Fat",
-    "Olives, Pickles, Relish",
-    "Potatoes",
-    "Tee, Cola",
-    "Tzatziki",
-    "Avocados",
-]
-BAD_LIST_RIGHT = [
-    "Chocolate",
-    "Dried Fruits",
-    "Marzipan",
-    "Undiluted Fruit Juice",
-    "Vegetable Juice",
-    "Canned Tomato Products/Juice",
-    "Bananas, Kiwis",
-    "Dates, Figs",
-    "Feta, Parmesan, Cheddar etc.",
-    "Most Dairy Products",
-    "Coconuts, Nuts",
-]
-SALT_CONTENT = [
-    "- Season food after it's\n  cooked for more control",
-    "- Don't use salt substitute!\n  Use alternatives instead",
-    "- Alternatives are:\n  Basil, Cilantro, Garlic\n  Oregano, Mint, Chives\n  Lemon, Parsley, Sage",
-]
-PHOSPHOROUS_CONTENT = [
-    "- Throw out cooking water\n  & change while cooking",
-    "- Throw away canned\n  vegetables & meat juice",
-    "- Soak diced vegetables\n  in  water before cooking",
-    "- Dice or shred vegetables\n  with high  phosphorous\n  content",
-]
-ADDITIONAL_CONTENT = [
-    "- Avoid eating animal skin\n  (poultry)",
-    "- Try not to eat egss more\n  than 3x per week",
-    "- Pre-fill your water bottle\n  for the entire day",
-    "- Remember food contains\n  water as well!\n  (fruits, soup, ice cream)",
-]
-
-NUTRIENT_NAME = [
-    "Protein",
-    "Energy",
-    "Phosphorus, P",
-    "Potassium, K",
-    "Sodium, Na",
-]
+# No module named 'test_d'
+# from test_d import dConsts as d
+# from test_d import dConsts
+# Attempted relative import with no known parent package
+# from .dConsts import *
+import dConsts
 
 
 class Page(tk.Frame):
     # Main content frame
     def __init__(self):
-        tk.Frame.__init__(self, bg=MAIN_FRAME_COLOR)
+        tk.Frame.__init__(self, bg=dConsts.MAIN_FRAME_COLOR)
 
     def show(self):
         self.lift()
@@ -129,19 +33,19 @@ class Intro(Page):
         label = tk.Label(
             self,
             text="Welcome to the Dialysis Nutrition App!",
-            bg=MAIN_FRAME_COLOR,
+            bg=dConsts.MAIN_FRAME_COLOR,
             font=("Arial", 24, "bold"),
         )
         label.pack(pady=30)
 
         # Border around text body and message generation
-        border_frame = tk.LabelFrame(self, bg=MAIN_FRAME_COLOR)
+        border_frame = tk.LabelFrame(self, bg=dConsts.MAIN_FRAME_COLOR)
         border_frame.pack()
         message = tk.Message(
             border_frame,
             text=Intro.intro_text,
             font=("Arial", 18),
-            bg=MAIN_FRAME_COLOR,
+            bg=dConsts.MAIN_FRAME_COLOR,
         )
         message.pack(pady=20)
 
@@ -154,7 +58,7 @@ class Calculator(Page):
             self,
             text="Calculate your daily energy and protein intake requirements.",
             font=("Arial", 20),
-            bg=MAIN_FRAME_COLOR,
+            bg=dConsts.MAIN_FRAME_COLOR,
         )
         label.pack(pady=25)
 
@@ -163,7 +67,7 @@ class Calculator(Page):
             self,
             text="Enter your weight in kg:",
             font=("Arial", 18),
-            bg=MAIN_FRAME_COLOR,
+            bg=dConsts.MAIN_FRAME_COLOR,
         )
         weight_label.pack(pady=10)
 
@@ -186,7 +90,7 @@ class Calculator(Page):
         note = tk.Label(
             self,
             text="*All numbers are rounded to the nearest ones place",
-            bg=MAIN_FRAME_COLOR,
+            bg=dConsts.MAIN_FRAME_COLOR,
         )
         note.place(relx=0.05, rely=0.9)
 
@@ -212,23 +116,29 @@ class Calculator(Page):
 
         # Calories and protein labels, excluding actual calculated value
         calories_result = tk.Label(
-            self, text=calories, font=("Arial", 18), bg=MAIN_FRAME_COLOR
+            self, text=calories, font=("Arial", 18), bg=dConsts.MAIN_FRAME_COLOR
         )
         calories_result.place(relx=0.36, rely=0.5, relwidth=0.2, relheight=0.1)
 
         protein_result = tk.Label(
-            self, text=protein, font=("Arial", 18), bg=MAIN_FRAME_COLOR
+            self, text=protein, font=("Arial", 18), bg=dConsts.MAIN_FRAME_COLOR
         )
         protein_result.place(relx=0.36, rely=0.6, relwidth=0.2, relheight=0.1)
 
         # Automatic self updating StringVar printed to the screen
         display_calories = tk.Label(
-            self, textvariable=cal_number, bg=MAIN_FRAME_COLOR, font=("Arial", 18)
+            self,
+            textvariable=cal_number,
+            bg=dConsts.MAIN_FRAME_COLOR,
+            font=("Arial", 18),
         )
         display_calories.place(relx=0.56, rely=0.5, relwidth=0.1, relheight=0.1)
 
         display_protein = tk.Label(
-            self, textvariable=prot_number, bg=MAIN_FRAME_COLOR, font=("Arial", 18)
+            self,
+            textvariable=prot_number,
+            bg=dConsts.MAIN_FRAME_COLOR,
+            font=("Arial", 18),
         )
         display_protein.place(relx=0.56, rely=0.6, relwidth=0.1, relheight=0.1)
 
@@ -240,9 +150,15 @@ class Guidelines(Page):
         notebook.pack()
 
         # Creating each tab frame
-        intake_frame = tk.Frame(notebook, width=900, height=500, bg=MAIN_FRAME_COLOR)
-        good_foods_frame = tk.Frame(notebook, width=900, height=500, bg=GOOD_FOOD_COLOR)
-        bad_foods_frame = tk.Frame(notebook, width=900, height=500, bg=BAD_FOOD_COLOR)
+        intake_frame = tk.Frame(
+            notebook, width=900, height=500, bg=dConsts.MAIN_FRAME_COLOR
+        )
+        good_foods_frame = tk.Frame(
+            notebook, width=900, height=500, bg=dConsts.GOOD_FOOD_COLOR
+        )
+        bad_foods_frame = tk.Frame(
+            notebook, width=900, height=500, bg=dConsts.BAD_FOOD_COLOR
+        )
         # api_frame = tk.Frame(notebook, width=900, height=500, bg="orange")
 
         # Naming each tab
@@ -263,46 +179,58 @@ class Guidelines(Page):
         good_foods_title = self.tab_titles(
             good_foods_frame,
             "Low levels of phosphorous and potassium foods",
-            GOOD_FOOD_COLOR,
+            dConsts.GOOD_FOOD_COLOR,
         )
         bad_foods_title = self.tab_titles(
             bad_foods_frame,
             "High levels of phosphorous and potassium foods",
-            BAD_FOOD_COLOR,
+            dConsts.BAD_FOOD_COLOR,
         )
         # api_title = self.tab_titles(api_frame, "Nutrition Search Engine")
 
         # All Tab Inside Content Frames
         # Daily Intake Tab Frames
-        tab1_left = tk.Frame(intake_frame, bg=MAIN_FRAME_COLOR)
+        tab1_left = tk.Frame(intake_frame, bg=dConsts.MAIN_FRAME_COLOR)
         tab1_left.place(relx=0.25, rely=0.25, relwidth=0.2, relheight=0.6)
-        tab1_right = tk.Frame(intake_frame, bg=MAIN_FRAME_COLOR)
+        tab1_right = tk.Frame(intake_frame, bg=dConsts.MAIN_FRAME_COLOR)
         tab1_right.place(relx=0.45, rely=0.25, relwidth=0.45, relheight=0.6)
 
         # Recommended Foods Frames
-        tab2_left = self.tab_content_foods(good_foods_frame, GOOD_FOOD_COLOR)
-        tab2_right = self.tab_content_foods(good_foods_frame, GOOD_FOOD_COLOR, 0.5)
+        tab2_left = self.tab_content_foods(good_foods_frame, dConsts.GOOD_FOOD_COLOR)
+        tab2_right = self.tab_content_foods(
+            good_foods_frame, dConsts.GOOD_FOOD_COLOR, 0.5
+        )
         # Foods to Avoid Frames
-        avoid_left = self.tab_content_foods(bad_foods_frame, BAD_FOOD_COLOR)
-        avoid_right = self.tab_content_foods(bad_foods_frame, BAD_FOOD_COLOR, 0.5)
+        avoid_left = self.tab_content_foods(bad_foods_frame, dConsts.BAD_FOOD_COLOR)
+        avoid_right = self.tab_content_foods(
+            bad_foods_frame, dConsts.BAD_FOOD_COLOR, 0.5
+        )
 
         # Defining Actual Tab Contents
 
         daily_left = self.daily_nutr_text(
-            tab1_left, DAILY_NUTR_LEFT, MAIN_FRAME_COLOR, "bold"
+            tab1_left, dConsts.DAILY_NUTR_LEFT, dConsts.MAIN_FRAME_COLOR, "bold"
         )
         daily_right = self.daily_nutr_text(
-            tab1_right, DAILY_NUTR_RIGHT, MAIN_FRAME_COLOR
+            tab1_right, dConsts.DAILY_NUTR_RIGHT, dConsts.MAIN_FRAME_COLOR
         )
 
-        good_left = self.tab_body(tab2_left, GOOD_LIST_LEFT, GOOD_FOOD_COLOR)
-        good_right = self.tab_body(tab2_right, GOOD_LIST_RIGHT, GOOD_FOOD_COLOR)
+        good_left = self.tab_body(
+            tab2_left, dConsts.GOOD_LIST_LEFT, dConsts.GOOD_FOOD_COLOR
+        )
+        good_right = self.tab_body(
+            tab2_right, dConsts.GOOD_LIST_RIGHT, dConsts.GOOD_FOOD_COLOR
+        )
 
-        bad_left = self.tab_body(avoid_left, BAD_LIST_LEFT, BAD_FOOD_COLOR)
-        bad_right = self.tab_body(avoid_right, BAD_LIST_RIGHT, BAD_FOOD_COLOR)
+        bad_left = self.tab_body(
+            avoid_left, dConsts.BAD_LIST_LEFT, dConsts.BAD_FOOD_COLOR
+        )
+        bad_right = self.tab_body(
+            avoid_right, dConsts.BAD_LIST_RIGHT, dConsts.BAD_FOOD_COLOR
+        )
 
     # Method for creating all tab content headers
-    def tab_titles(self, frame, text, color=MAIN_FRAME_COLOR):
+    def tab_titles(self, frame, text, color=dConsts.MAIN_FRAME_COLOR):
         title = tk.Label(
             frame,
             text=text,
@@ -350,12 +278,12 @@ class Information(Page):
             self,
             text="Important Things to Note",
             font=("Arial", 24, "bold"),
-            bg=MAIN_FRAME_COLOR,
+            bg=dConsts.MAIN_FRAME_COLOR,
         )
         label.pack(pady=30)
 
         # Generates the border around the text body => box frame
-        border_frame = tk.LabelFrame(self, bg=MAIN_FRAME_COLOR)
+        border_frame = tk.LabelFrame(self, bg=dConsts.MAIN_FRAME_COLOR)
         border_frame.place(relx=0.05, rely=0.2, relwidth=0.9, relheight=0.7)
 
         # Creating frame for each information column/section => The 3 small frames!
@@ -371,20 +299,20 @@ class Information(Page):
         right_header = self.headers(right_frame, "Additional Insights")
 
         # Contents to fill each frame of each category
-        left_content = self.frame_contents(left_frame, SALT_CONTENT)
-        middle_content = self.frame_contents(middle_frame, PHOSPHOROUS_CONTENT)
-        right_content = self.frame_contents(right_frame, ADDITIONAL_CONTENT)
+        left_content = self.frame_contents(left_frame, dConsts.SALT_CONTENT)
+        middle_content = self.frame_contents(middle_frame, dConsts.PHOSPHOROUS_CONTENT)
+        right_content = self.frame_contents(right_frame, dConsts.ADDITIONAL_CONTENT)
 
     # Method I used to create the 3 small frames
     def sections(self, frame, relx):
-        section_frame = tk.Frame(frame, bg=MAIN_FRAME_COLOR)
+        section_frame = tk.Frame(frame, bg=dConsts.MAIN_FRAME_COLOR)
         section_frame.place(relx=relx, rely=0.08, relwidth=0.31, relheight=0.85)
         return section_frame
 
     # Header I used to create the header for each small frame
     def headers(self, frame, text):
         header = tk.Label(
-            frame, text=text, font=("Arial", 16, "bold"), bg=MAIN_FRAME_COLOR
+            frame, text=text, font=("Arial", 16, "bold"), bg=dConsts.MAIN_FRAME_COLOR
         )
         header.pack()  # place(relx=0.5, rely=0.02)
 
@@ -397,7 +325,7 @@ class Information(Page):
                 text=point,
                 font=("Arial", 16),
                 justify="left",
-                bg=MAIN_FRAME_COLOR,
+                bg=dConsts.MAIN_FRAME_COLOR,
             )
             point.place(relx=0.1, rely=y)
             y += 0.2
@@ -416,14 +344,14 @@ class Nutrients(Page):
             self,
             text="Food Item Nutrition Finder",
             font=("Arial", 20, "bold"),
-            bg=MAIN_FRAME_COLOR,
+            bg=dConsts.MAIN_FRAME_COLOR,
         )
         label.pack(pady=20)
 
         instructions = tk.Message(
             self,
             text="Enter a food item and find its nutrition information for calories, protein, potassium and phosphorous:",
-            background=MAIN_FRAME_COLOR,
+            background=dConsts.MAIN_FRAME_COLOR,
             font=("Arial", 18),
             justify="center",
             aspect=800,
@@ -459,13 +387,13 @@ class Nutrients(Page):
             self,
             text=text,
             font=10,
-            bg=MAIN_FRAME_COLOR,
+            bg=dConsts.MAIN_FRAME_COLOR,
         )
         note.place(relx=0.05, rely=y)
         return note
 
     def getting_api(self, food):
-        API_KEY = "DEMO_KEY"
+        API_KEY = "msaEfc0OdowiMGDgSgBQewrZHYONfdJcH8OrAsaX"
         # query = input("Enter food item: ")
         query = food
         url = f"https://api.nal.usda.gov/fdc/v1/foods/search?api_key={API_KEY}&query={query}&dataType=Foundation,Survey%20%28FNDDS%29&pageSize=1&pageNumber=1"
@@ -473,40 +401,61 @@ class Nutrients(Page):
 
         nutrient_values = {}
         i = 0
-        # try:
-        for item in response["foods"][0]["foodNutrients"]:
-            if i < len(NUTRIENT_NAME) and item["nutrientName"] == NUTRIENT_NAME[i]:
-                # nutrient_names.append(item["nutrientName"])
-                nutrient_values[item["value"]] = item["unitName"].lower()
-                i += 1
+        try:
+            for item in response["foods"][0]["foodNutrients"]:
+                if (
+                    i < len(dConsts.dConsts.NUTRIENT_NAME)
+                    and item["nutrientName"] == dConsts.dConsts.NUTRIENT_NAME[i]
+                ):
+                    nutrient_values[item["value"]] = item["unitName"].lower()
+                    i += 1
 
-        nutrient_name_frame = tk.Frame(self, bg=MAIN_FRAME_COLOR)
-        nutrient_name_frame.place(relx=0.3, rely=0.47, relwidth=0.2, relheight=0.3)
+            nutrient_name_frame = tk.Frame(self, bg=dConsts.MAIN_FRAME_COLOR)
+            nutrient_name_frame.place(relx=0.3, rely=0.47, relwidth=0.3, relheight=0.3)
 
-        nutrient_value_frame = tk.Frame(self, bg=MAIN_FRAME_COLOR)
-        nutrient_value_frame.place(relx=0.55, rely=0.47, relwidth=0.08, relheight=0.3)
-
-        nutrient_unit_frame = tk.Frame(self, bg=MAIN_FRAME_COLOR)
-        nutrient_unit_frame.place(relx=0.62, rely=0.47, relwidth=0.08, relheight=0.3)
-
-        nutrient_lables = self.nutrient_label(nutrient_name_frame, NUTRIENT_NAME)
-
-        display_values = self.nutrient_label(nutrient_value_frame, nutrient_values)
-        y = 0.2
-        for nutrient in nutrient_values:
-            display_unit = tk.Label(
-                nutrient_unit_frame,
-                text=nutrient_values[nutrient],
-                font=("Arial", 18),
-                justify="left",
-                bg=MAIN_FRAME_COLOR,
+            nutrient_value_frame = tk.Frame(self, bg=dConsts.MAIN_FRAME_COLOR)
+            nutrient_value_frame.place(
+                relx=0.55, rely=0.47, relwidth=0.08, relheight=0.3
             )
-            display_unit.place(relx=0.1, rely=y)
-            y += 0.2
 
-    def string_var(value):
-        nutrient = tk.StringVar(value=value)
-        nutrient.get()
+            nutrient_unit_frame = tk.Frame(self, bg=dConsts.MAIN_FRAME_COLOR)
+            nutrient_unit_frame.place(
+                relx=0.62, rely=0.47, relwidth=0.08, relheight=0.3
+            )
+
+            nutrient_lables = self.nutrient_label(
+                nutrient_name_frame, dConsts.dConsts.NUTRIENT_NAME
+            )
+
+            display_values = self.nutrient_label(nutrient_value_frame, nutrient_values)
+
+            y = 0.2
+            for nutrient in nutrient_values:
+                display_unit = tk.Label(
+                    nutrient_unit_frame,
+                    text=nutrient_values[nutrient],
+                    font=("Arial", 18),
+                    justify="left",
+                    bg=dConsts.MAIN_FRAME_COLOR,
+                )
+                display_unit.place(relx=0.1, rely=y)
+                y += 0.2
+        except Exception as e:
+
+            # nutrient_name_frame.destroy()
+            # nutrient_unit_frame.destroy()
+            # nutrient_value_frame.destroy()
+
+            error_frame = tk.Frame(self, bg=dConsts.MAIN_FRAME_COLOR)
+            error_frame.place(relx=0.3, rely=0.46, relwidth=0.4, relheight=0.3)
+
+            error_label = tk.Label(
+                error_frame,
+                text="Item Not Found",
+                font=("Arial", 18),
+                bg=dConsts.MAIN_FRAME_COLOR,
+            )
+            error_label.place(relx=0.28, rely=0.3)
 
     def nutrient_label(self, frame, nutrient_list):
         y = 0.2
@@ -516,7 +465,7 @@ class Nutrients(Page):
                 text=nutrient,
                 font=("Arial", 18),
                 justify="left",
-                bg=MAIN_FRAME_COLOR,
+                bg=dConsts.MAIN_FRAME_COLOR,
             )
             point.place(relx=0.1, rely=y)
             y += 0.2
@@ -528,7 +477,7 @@ class MenuButton(object):
             frame,
             text=btn_text,
             height=100,
-            background=BTN_COLOR,
+            background=dConsts.BTN_COLOR,
             activebackground="orange",
             # activeforeground="black",
             font=("Arial", 24),
@@ -552,7 +501,7 @@ class MainWindow(tk.Frame):
             self.frame,
             text="Dialysis Nutrition Information",
             justify="center",
-            bg=MAIN_WINDOW_COLOR,
+            bg=dConsts.MAIN_WINDOW_COLOR,
             font=("Arial", 32, "bold"),
         )
         self.header.place(relx=0.42, rely=0.1)
@@ -579,9 +528,9 @@ class MainWindow(tk.Frame):
 
 if __name__ == "__main__":
     window = tk.Tk()
-    window.title(WINDOW_TITLE)
-    window.configure(bg=MAIN_WINDOW_COLOR)
+    window.title(dConsts.WINDOW_TITLE)
+    window.configure(bg=dConsts.MAIN_WINDOW_COLOR)
     main = MainWindow(window)
     main.pack()
-    window.wm_geometry(MAIN_WINDOW_SIZE)
+    window.wm_geometry(dConsts.MAIN_WINDOW_SIZE)
     window.mainloop()
