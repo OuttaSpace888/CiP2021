@@ -393,7 +393,7 @@ class Nutrients(Page):
         return note
 
     def getting_api(self, food):
-        API_KEY = "msaEfc0OdowiMGDgSgBQewrZHYONfdJcH8OrAsaX"
+        API_KEY = "DEMO_KEY"
         # query = input("Enter food item: ")
         query = food
         url = f"https://api.nal.usda.gov/fdc/v1/foods/search?api_key={API_KEY}&query={query}&dataType=Foundation,Survey%20%28FNDDS%29&pageSize=1&pageNumber=1"
