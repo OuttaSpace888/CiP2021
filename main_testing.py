@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import Frame, ttk
 from tkmacosx import Button as button
 from io import BytesIO
 from PIL import Image, ImageTk
@@ -7,6 +7,7 @@ from py_edamam import PyEdamam
 import requests
 import webbrowser
 import math
+import json
 
 
 WINDOW_TITLE = "Dialysis Nutrition Information By Yihan Ye"
@@ -19,14 +20,14 @@ GOOD_FOOD_COLOR = "#9be281"
 BAD_FOOD_COLOR = "#f9a08b"
 BTN_COLOR = "#e5c5c8"
 # Nutrition Tab Content Lists
-DAILY_NUTR_LEFT = ["Calories", "Protein", "Liquid", "Salt", "Potassium", "Phosphorous"]
+DAILY_NUTR_LEFT = ["Calories", "Salt", "Protein", "Potassium", "Phosphorous", "Liquid"]
 DAILY_NUTR_RIGHT = [
     "30cal/kg per day",
+    "5-6g per day (including Sodium)",
     "1,2g/kg per day",
-    "500ml + residual excretion/24h",
-    "5-6g salt per day",
     "2000-2500mg per day",
     "1000-1400mg per day",
+    "500ml + residual excretion/24h",
 ]
 GOOD_LIST_LEFT = [
     "Zucchini, Cucumbers",
@@ -95,7 +96,15 @@ ADDITIONAL_CONTENT = [
     "- Avoid eating animal skin\n  (poultry)",
     "- Try not to eat egss more\n  than 3x per week",
     "- Pre-fill your water bottle\n  for the entire day",
-    "- Don't forget food contains\n  water as well!\n  (fruits, soup, ice cream)",
+    "- Remember food contains\n  water as well!\n  (fruits, soup, ice cream)",
+]
+
+NUTRIENT_NAME = [
+    "Protein",
+    "Energy",
+    "Phosphorus, P",
+    "Potassium, K",
+    "Sodium, Na",
 ]
 
 
@@ -169,7 +178,7 @@ class Calculator(Page):
             bg="#5ddeef",
             activebackground="#4285f4",
             font=("Arial", 14),
-            command=lambda: self.calculating_weight(self, weight_entry.get()),
+            command=lambda: self.calculating_weight(weight_entry.get()),
         )
         weight_btn.pack(pady=10)
 
@@ -187,7 +196,7 @@ class Calculator(Page):
         return math.floor(n * multiplier + 0.5) / multiplier
 
     # Calculates daily intakes and displays them on the screen
-    def calculating_weight(self, frame, weight):
+    def calculating_weight(self, weight):
         # Converts weight into float for accurate calculation with the help of round_half_up() function,
         # rounds the number and return as integer
         daily_calories = int(self.round_half_up(float(weight.strip().strip("kg")) * 30))
@@ -203,23 +212,23 @@ class Calculator(Page):
 
         # Calories and protein labels, excluding actual calculated value
         calories_result = tk.Label(
-            frame, text=calories, font=("Arial", 18), bg=MAIN_FRAME_COLOR
+            self, text=calories, font=("Arial", 18), bg=MAIN_FRAME_COLOR
         )
         calories_result.place(relx=0.36, rely=0.5, relwidth=0.2, relheight=0.1)
 
         protein_result = tk.Label(
-            frame, text=protein, font=("Arial", 18), bg=MAIN_FRAME_COLOR
+            self, text=protein, font=("Arial", 18), bg=MAIN_FRAME_COLOR
         )
         protein_result.place(relx=0.36, rely=0.6, relwidth=0.2, relheight=0.1)
 
         # Automatic self updating StringVar printed to the screen
         display_calories = tk.Label(
-            frame, textvariable=cal_number, bg=MAIN_FRAME_COLOR, font=("Arial", 18)
+            self, textvariable=cal_number, bg=MAIN_FRAME_COLOR, font=("Arial", 18)
         )
         display_calories.place(relx=0.56, rely=0.5, relwidth=0.1, relheight=0.1)
 
         display_protein = tk.Label(
-            frame, textvariable=prot_number, bg=MAIN_FRAME_COLOR, font=("Arial", 18)
+            self, textvariable=prot_number, bg=MAIN_FRAME_COLOR, font=("Arial", 18)
         )
         display_protein.place(relx=0.56, rely=0.6, relwidth=0.1, relheight=0.1)
 
@@ -268,7 +277,7 @@ class Guidelines(Page):
         tab1_left = tk.Frame(intake_frame, bg=MAIN_FRAME_COLOR)
         tab1_left.place(relx=0.25, rely=0.25, relwidth=0.2, relheight=0.6)
         tab1_right = tk.Frame(intake_frame, bg=MAIN_FRAME_COLOR)
-        tab1_right.place(relx=0.5, rely=0.25, relwidth=0.4, relheight=0.6)
+        tab1_right.place(relx=0.45, rely=0.25, relwidth=0.45, relheight=0.6)
 
         # Recommended Foods Frames
         tab2_left = self.tab_content_foods(good_foods_frame, GOOD_FOOD_COLOR)
@@ -333,10 +342,6 @@ class Guidelines(Page):
     #     tabs.pack(fill="both", expand=1)
 
 
-class TabHeader(Page):
-    pass
-
-
 class Information(Page):
     def __init__(self):
         # Main Content Frame
@@ -373,7 +378,7 @@ class Information(Page):
     # Method I used to create the 3 small frames
     def sections(self, frame, relx):
         section_frame = tk.Frame(frame, bg=MAIN_FRAME_COLOR)
-        section_frame.place(relx=relx, rely=0.08, relwidth=0.3, relheight=0.85)
+        section_frame.place(relx=relx, rely=0.08, relwidth=0.31, relheight=0.85)
         return section_frame
 
     # Header I used to create the header for each small frame
@@ -394,7 +399,7 @@ class Information(Page):
                 justify="left",
                 bg=MAIN_FRAME_COLOR,
             )
-            point.place(relx=0.06, rely=y)
+            point.place(relx=0.1, rely=y)
             y += 0.2
 
 
@@ -436,17 +441,85 @@ class Nutrients(Page):
             bg="#5ddeef",
             activebackground="#4285f4",
             font=("Arial", 14),
-            # command=lambda: self.getting_api(self, food_entry.get()),
+            command=lambda: self.getting_api(food_entry.get()),
         )
         btn.pack(pady=10)
 
+        second_note = self.note(
+            "**All nutrients are based on a portion size of 100g incl. liquids", 0.95
+        )
+        first_note = self.note(
+            "*Source: USDA FoodData Central API",
+            0.91,
+        )
+
+    def note(self, text, y):
         # additional note marked with '*'
         note = tk.Label(
             self,
-            text="*All Nutrion Information Are From USDA FoodData Central API",
+            text=text,
+            font=10,
             bg=MAIN_FRAME_COLOR,
         )
-        note.place(relx=0.05, rely=0.9)
+        note.place(relx=0.05, rely=y)
+        return note
+
+    def getting_api(self, food):
+        API_KEY = "DEMO_KEY"
+        # query = input("Enter food item: ")
+        query = food
+        url = f"https://api.nal.usda.gov/fdc/v1/foods/search?api_key={API_KEY}&query={query}&dataType=Foundation,Survey%20%28FNDDS%29&pageSize=1&pageNumber=1"
+        response = requests.get(url).json()
+
+        nutrient_values = {}
+        i = 0
+        # try:
+        for item in response["foods"][0]["foodNutrients"]:
+            if i < len(NUTRIENT_NAME) and item["nutrientName"] == NUTRIENT_NAME[i]:
+                # nutrient_names.append(item["nutrientName"])
+                nutrient_values[item["value"]] = item["unitName"].lower()
+                i += 1
+
+        nutrient_name_frame = tk.Frame(self, bg=MAIN_FRAME_COLOR)
+        nutrient_name_frame.place(relx=0.3, rely=0.47, relwidth=0.2, relheight=0.3)
+
+        nutrient_value_frame = tk.Frame(self, bg=MAIN_FRAME_COLOR)
+        nutrient_value_frame.place(relx=0.55, rely=0.47, relwidth=0.08, relheight=0.3)
+
+        nutrient_unit_frame = tk.Frame(self, bg=MAIN_FRAME_COLOR)
+        nutrient_unit_frame.place(relx=0.62, rely=0.47, relwidth=0.08, relheight=0.3)
+
+        nutrient_lables = self.nutrient_label(nutrient_name_frame, NUTRIENT_NAME)
+
+        display_values = self.nutrient_label(nutrient_value_frame, nutrient_values)
+        y = 0.2
+        for nutrient in nutrient_values:
+            display_unit = tk.Label(
+                nutrient_unit_frame,
+                text=nutrient_values[nutrient],
+                font=("Arial", 18),
+                justify="left",
+                bg=MAIN_FRAME_COLOR,
+            )
+            display_unit.place(relx=0.1, rely=y)
+            y += 0.2
+
+    def string_var(value):
+        nutrient = tk.StringVar(value=value)
+        nutrient.get()
+
+    def nutrient_label(self, frame, nutrient_list):
+        y = 0.2
+        for nutrient in nutrient_list:
+            point = tk.Label(
+                frame,
+                text=nutrient,
+                font=("Arial", 18),
+                justify="left",
+                bg=MAIN_FRAME_COLOR,
+            )
+            point.place(relx=0.1, rely=y)
+            y += 0.2
 
 
 class MenuButton(object):
