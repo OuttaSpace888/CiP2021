@@ -3,15 +3,10 @@ from tkinter import ttk
 from tkmacosx import Button as button
 import requests
 import math
-
-# No module named 'test_d'
-# from test_d import dConsts as d
-# from test_d import dConsts
-# Attempted relative import with no known parent package
-# from .dConsts import *
 import dConsts
 
 
+# Lifting page to the top
 class Page(tk.Frame):
     # Main content frame
     def __init__(self):
@@ -21,13 +16,14 @@ class Page(tk.Frame):
         self.lift()
 
 
+# Welcome page! First page of app
 class Intro(Page):
     intro_text = (
         "Here you can find recommended foods to eat for dialysis patients as well as which foods to avoid. You can also find nutrition information for individual food items of your choice with the built in API!\n"
         "\nUse the calculator to determine your daily energy and protein intake for a balanced diet.\n"
         "\nCheck out the other tabs for additional useful information that can help you consume your favorite foods in a safe way!"
     )
-
+    # App Header
     def __init__(self):
         Page.__init__(self)
         label = tk.Label(
@@ -50,7 +46,6 @@ class Intro(Page):
         message.pack(pady=20)
 
 
-# TODO: Put Calculator and Nutrients together
 class Calculator(Page):
     def __init__(self):
         Page.__init__(self)
@@ -104,13 +99,14 @@ class Calculator(Page):
         # Converts weight into float for accurate calculation with the help of round_half_up() function,
         # rounds the number and return as integer
         daily_calories = int(self.round_half_up(float(weight.strip().strip("kg")) * 30))
-        # Creates StringVar in order to update value with re-submission
+        daily_protein = int(self.round_half_up(float(weight.strip().strip("kg")) * 1.2))
+
+        # Creates StringVar for calories and protein in order to update value with re-submission
         cal_number = tk.StringVar(value=daily_calories)
+        prot_number = tk.StringVar(value=daily_protein)
+
         cal_number.get()
         calories = "Calories per day:"
-
-        daily_protein = int(self.round_half_up(float(weight.strip().strip("kg")) * 1.2))
-        prot_number = tk.StringVar(value=daily_protein)
         prot_number.get()
         protein = "Protein per day:"
 
@@ -125,7 +121,7 @@ class Calculator(Page):
         )
         protein_result.place(relx=0.36, rely=0.6, relwidth=0.2, relheight=0.1)
 
-        # Automatic self updating StringVar printed to the screen
+        # Automatic self updating StringVar printed to the screen (actual calculated value)
         display_calories = tk.Label(
             self,
             textvariable=cal_number,
@@ -146,6 +142,7 @@ class Calculator(Page):
 class Guidelines(Page):
     def __init__(self):
         Page.__init__(self)
+        # Creating Notebook
         notebook = ttk.Notebook(self, width=1000, height=500)
         notebook.pack()
 
@@ -159,15 +156,13 @@ class Guidelines(Page):
         bad_foods_frame = tk.Frame(
             notebook, width=900, height=500, bg=dConsts.BAD_FOOD_COLOR
         )
-        # api_frame = tk.Frame(notebook, width=900, height=500, bg="orange")
 
         # Naming each tab
-        frames = [intake_frame, good_foods_frame, bad_foods_frame]  # , api_frame]
+        frames = [intake_frame, good_foods_frame, bad_foods_frame]
         tab_names = [
             "Daily Intake",
             "Recommended Foods",
             "Foods to Avoid",
-            # "Nutrition API",
         ]
         i = 0
         for frame in frames:
@@ -186,9 +181,8 @@ class Guidelines(Page):
             "High levels of phosphorous and potassium foods",
             dConsts.BAD_FOOD_COLOR,
         )
-        # api_title = self.tab_titles(api_frame, "Nutrition Search Engine")
 
-        # All Tab Inside Content Frames
+        # Creating a frame for each tab and its content
         # Daily Intake Tab Frames
         tab1_left = tk.Frame(intake_frame, bg=dConsts.MAIN_FRAME_COLOR)
         tab1_left.place(relx=0.25, rely=0.25, relwidth=0.2, relheight=0.6)
@@ -207,7 +201,6 @@ class Guidelines(Page):
         )
 
         # Defining Actual Tab Contents
-
         daily_left = self.daily_nutr_text(
             tab1_left, dConsts.DAILY_NUTR_LEFT, dConsts.MAIN_FRAME_COLOR, "bold"
         )
@@ -246,6 +239,7 @@ class Guidelines(Page):
         return content_frame
 
     # Generates all tab contents
+    # => recommended and foods to avoid
     def tab_body(self, frame, content, color):
         labels = []
         for text in content:
@@ -254,6 +248,7 @@ class Guidelines(Page):
             labels.append(label)
         return labels
 
+    # => Daily intake content
     def daily_nutr_text(self, frame, content, color, bold=""):
         y = 0.1
         labels = []
@@ -264,12 +259,8 @@ class Guidelines(Page):
             labels.append(label)
         return labels
 
-    # TODO: Try re-writing it with class method later
-    # def tab_frames(self):
-    #     tabs = tk.Frame(self.notebook, width=900, height=500, bg="black")
-    #     tabs.pack(fill="both", expand=1)
 
-
+# Called Tips and Tricks Category on GUI
 class Information(Page):
     def __init__(self):
         # Main Content Frame
@@ -298,7 +289,7 @@ class Information(Page):
         )
         right_header = self.headers(right_frame, "Additional Insights")
 
-        # Contents to fill each frame of each category
+        # Contents to fill each of frame of each category (content for 3 small frames)
         left_content = self.frame_contents(left_frame, dConsts.SALT_CONTENT)
         middle_content = self.frame_contents(middle_frame, dConsts.PHOSPHOROUS_CONTENT)
         right_content = self.frame_contents(right_frame, dConsts.ADDITIONAL_CONTENT)
@@ -309,7 +300,7 @@ class Information(Page):
         section_frame.place(relx=relx, rely=0.08, relwidth=0.31, relheight=0.85)
         return section_frame
 
-    # Header I used to create the header for each small frame
+    # Method I used to create the header for each small frame
     def headers(self, frame, text):
         header = tk.Label(
             frame, text=text, font=("Arial", 16, "bold"), bg=dConsts.MAIN_FRAME_COLOR
@@ -331,12 +322,7 @@ class Information(Page):
             y += 0.2
 
 
-# class InfoLeftFrame(Information):
-#     def __init__(self):
-#         Information.__init__(self)
-#         frame = self.sections(, 0.03)
-
-
+# Food Nutrition API Search Engine (Nutrients Category of GUI)
 class Nutrients(Page):
     def __init__(self):
         Page.__init__(self)
@@ -348,6 +334,7 @@ class Nutrients(Page):
         )
         label.pack(pady=20)
 
+        # Instrustions to enter food item and what nutrients to find
         instructions = tk.Message(
             self,
             text="Enter a food item and find its nutrition information for calories, protein, potassium and phosphorous:",
@@ -373,6 +360,7 @@ class Nutrients(Page):
         )
         btn.pack(pady=10)
 
+        # Unit and source information
         second_note = self.note(
             "**All nutrients are based on a portion size of 100g incl. liquids", 0.95
         )
@@ -381,8 +369,8 @@ class Nutrients(Page):
             0.91,
         )
 
+    # Create additional note marked with '*'
     def note(self, text, y):
-        # additional note marked with '*'
         note = tk.Label(
             self,
             text=text,
@@ -392,24 +380,26 @@ class Nutrients(Page):
         note.place(relx=0.05, rely=y)
         return note
 
+    # Fetching API and returning output to GUI
     def getting_api(self, food):
-        API_KEY = "DEMO_KEY"
-        # query = input("Enter food item: ")
+        API_KEY = dConsts.API
         query = food
         url = f"https://api.nal.usda.gov/fdc/v1/foods/search?api_key={API_KEY}&query={query}&dataType=Foundation,Survey%20%28FNDDS%29&pageSize=1&pageNumber=1"
         response = requests.get(url).json()
 
+        # Storing nutrient values and unit in dict
         nutrient_values = {}
         i = 0
         try:
             for item in response["foods"][0]["foodNutrients"]:
                 if (
-                    i < len(dConsts.dConsts.NUTRIENT_NAME)
-                    and item["nutrientName"] == dConsts.dConsts.NUTRIENT_NAME[i]
+                    i < len(dConsts.NUTRIENT_NAME)
+                    and item["nutrientName"] == dConsts.NUTRIENT_NAME[i]
                 ):
                     nutrient_values[item["value"]] = item["unitName"].lower()
                     i += 1
 
+            # Creating frames for nutrient name, value and unit
             nutrient_name_frame = tk.Frame(self, bg=dConsts.MAIN_FRAME_COLOR)
             nutrient_name_frame.place(relx=0.3, rely=0.47, relwidth=0.3, relheight=0.3)
 
@@ -417,18 +407,19 @@ class Nutrients(Page):
             nutrient_value_frame.place(
                 relx=0.55, rely=0.47, relwidth=0.08, relheight=0.3
             )
-
             nutrient_unit_frame = tk.Frame(self, bg=dConsts.MAIN_FRAME_COLOR)
             nutrient_unit_frame.place(
                 relx=0.62, rely=0.47, relwidth=0.08, relheight=0.3
             )
 
+            # Creating all API outcome labels
+            # => nutrient name labels
             nutrient_lables = self.nutrient_label(
-                nutrient_name_frame, dConsts.dConsts.NUTRIENT_NAME
+                nutrient_name_frame, dConsts.NUTRIENT_NAME
             )
-
+            # => nutrient value labels
             display_values = self.nutrient_label(nutrient_value_frame, nutrient_values)
-
+            # => nutrient unit labels
             y = 0.2
             for nutrient in nutrient_values:
                 display_unit = tk.Label(
@@ -440,15 +431,14 @@ class Nutrients(Page):
                 )
                 display_unit.place(relx=0.1, rely=y)
                 y += 0.2
+
+        # Incase item is not included in db or couldn't be found due to spelling or any other error
         except Exception as e:
-
-            # nutrient_name_frame.destroy()
-            # nutrient_unit_frame.destroy()
-            # nutrient_value_frame.destroy()
-
+            # Creating frame for error outcome (covers name, value and unit frame)
             error_frame = tk.Frame(self, bg=dConsts.MAIN_FRAME_COLOR)
             error_frame.place(relx=0.3, rely=0.46, relwidth=0.4, relheight=0.3)
 
+            # Error message label
             error_label = tk.Label(
                 error_frame,
                 text="Item Not Found",
@@ -457,6 +447,7 @@ class Nutrients(Page):
             )
             error_label.place(relx=0.28, rely=0.3)
 
+    # Creates labels (outcome text) for nutrient names and value
     def nutrient_label(self, frame, nutrient_list):
         y = 0.2
         for nutrient in nutrient_list:
@@ -471,6 +462,7 @@ class Nutrients(Page):
             y += 0.2
 
 
+# All large menu buttons on the left hand side
 class MenuButton(object):
     def __init__(self, frame, btn_text, raise_content):
         btn = button(
@@ -486,6 +478,7 @@ class MenuButton(object):
         btn.pack(fill="both")
 
 
+# Main Window, where everything gets together. Calls pages, menu button functions and main window structure
 class MainWindow(tk.Frame):
     def __init__(self, frame) -> None:
         tk.Frame.__init__(self, frame)
@@ -527,6 +520,7 @@ class MainWindow(tk.Frame):
 
 
 if __name__ == "__main__":
+    # Creates tkinter window and window settings
     window = tk.Tk()
     window.title(dConsts.WINDOW_TITLE)
     window.configure(bg=dConsts.MAIN_WINDOW_COLOR)

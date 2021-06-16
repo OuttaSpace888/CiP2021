@@ -1,15 +1,20 @@
-# All constants for dialysis project
+"""
+All constants used for dialysis project
+accumulated in one file for easier accessibility 
+and cleaner code.
+"""
 
+# Window settings and all colors used in project
 WINDOW_TITLE = "Dialysis Nutrition Information By Yihan Ye"
-RECIPE_IMAGE_WIDTH = 350
-RECIPE_IMAGE_HEIGHT = 300
 MAIN_WINDOW_SIZE = "1000x1000"
 MAIN_WINDOW_COLOR = "#bedddc"
 MAIN_FRAME_COLOR = "#f4efeb"
 GOOD_FOOD_COLOR = "#9be281"
 BAD_FOOD_COLOR = "#f9a08b"
 BTN_COLOR = "#e5c5c8"
-# Nutrition Tab Content Lists
+
+# Guidelines Category
+# => Daily Intake Content
 DAILY_NUTR_LEFT = ["Calories", "Salt", "Protein", "Potassium", "Phosphorous", "Liquid"]
 DAILY_NUTR_RIGHT = [
     "30cal/kg per day",
@@ -19,6 +24,8 @@ DAILY_NUTR_RIGHT = [
     "1000-1400mg per day",
     "500ml + residual excretion/24h",
 ]
+
+# => Recommended Foods List
 GOOD_LIST_LEFT = [
     "Zucchini, Cucumbers",
     "Lemons, Lime",
@@ -45,32 +52,36 @@ GOOD_LIST_RIGHT = [
     "Watermelon",
     "Cooked Rice, Pasta",
 ]
+
+# => Foods to Avoid List
 BAD_LIST_LEFT = [
-    "Smoked Fish or Meat",
-    "Offal, Sausages, Salmon",
-    "Processed Foods",
-    "Canned Fish, Meat, Beans",
-    "Ketchup, Mayonnaise",
-    "Saturated Fat",
-    "Olives, Pickles, Relish",
     "Potatoes",
     "Tee, Cola",
     "Tzatziki",
     "Avocados",
+    "Olives, Pickles, Relish",
+    "Canned Fish, Meat, Beans",
+    "Smoked Fish or Meat",
+    "Offal, Sausages, Salmon",
+    "Processed Foods",
+    "Ketchup, Mayonnaise",
+    "Saturated Fat",
 ]
 BAD_LIST_RIGHT = [
     "Chocolate",
     "Dried Fruits",
     "Marzipan",
-    "Undiluted Fruit Juice",
-    "Vegetable Juice",
-    "Canned Tomato Products/Juice",
     "Bananas, Kiwis",
     "Dates, Figs",
+    "Canned Tomato Products/Juice",
+    "Undiluted Fruit Juice",
+    "Vegetable Juice",
     "Feta, Parmesan, Cheddar etc.",
     "Most Dairy Products",
     "Coconuts, Nuts",
 ]
+
+# Tips and Tricks Category Content
 SALT_CONTENT = [
     "- Season food after it's\n  cooked for more control",
     "- Don't use salt substitute!\n  Use alternatives instead",
@@ -88,6 +99,9 @@ ADDITIONAL_CONTENT = [
     "- Pre-fill your water bottle\n  for the entire day",
     "- Remember food contains\n  water as well!\n  (fruits, soup, ice cream)",
 ]
+
+# API
+API = "DEMO_KEY"
 
 NUTRIENT_NAME = [
     "Protein",
