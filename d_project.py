@@ -114,12 +114,22 @@ class Calculator(Page):
         calories_result = tk.Label(
             self, text=calories, font=("Arial", 18), bg=dConsts.MAIN_FRAME_COLOR
         )
-        calories_result.place(relx=0.36, rely=0.5, relwidth=0.2, relheight=0.1)
+        calories_result.place(relx=0.33, rely=0.5, relwidth=0.2, relheight=0.1)
 
         protein_result = tk.Label(
             self, text=protein, font=("Arial", 18), bg=dConsts.MAIN_FRAME_COLOR
         )
-        protein_result.place(relx=0.36, rely=0.6, relwidth=0.2, relheight=0.1)
+        protein_result.place(relx=0.33, rely=0.6, relwidth=0.2, relheight=0.1)
+
+        # Unit labels
+        calories_unit = tk.Label(
+            self, text='kcal', font=("Arial", 18), bg=dConsts.MAIN_FRAME_COLOR
+        )
+        calories_unit.place(relx=0.545, rely=0.5, relwidth=0.2, relheight=0.1)
+        protein_unit = tk.Label(
+            self, text='g', font=("Arial", 18), bg=dConsts.MAIN_FRAME_COLOR
+        )
+        protein_unit.place(relx=0.54, rely=0.6, relwidth=0.2, relheight=0.1)
 
         # Automatic self updating StringVar printed to the screen (actual calculated value)
         display_calories = tk.Label(
@@ -128,7 +138,7 @@ class Calculator(Page):
             bg=dConsts.MAIN_FRAME_COLOR,
             font=("Arial", 18),
         )
-        display_calories.place(relx=0.56, rely=0.5, relwidth=0.1, relheight=0.1)
+        display_calories.place(relx=0.52, rely=0.5, relwidth=0.1, relheight=0.1)
 
         display_protein = tk.Label(
             self,
@@ -136,7 +146,7 @@ class Calculator(Page):
             bg=dConsts.MAIN_FRAME_COLOR,
             font=("Arial", 18),
         )
-        display_protein.place(relx=0.56, rely=0.6, relwidth=0.1, relheight=0.1)
+        display_protein.place(relx=0.52, rely=0.6, relwidth=0.1, relheight=0.1)
 
 
 class Guidelines(Page):
