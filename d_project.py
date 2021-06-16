@@ -334,7 +334,7 @@ class Nutrients(Page):
         )
         label.pack(pady=20)
 
-        # Instrustions to enter food item and what nutrients to find
+        # Instructions to enter food item and what nutrients to find
         instructions = tk.Message(
             self,
             text="Enter a food item and find its nutrition information for calories, protein, sodium, potassium and phosphorous:",
@@ -418,7 +418,7 @@ class Nutrients(Page):
             )
 
         # In case item is not included in db or couldn't be found due to spelling or any other error
-        except Exception as e:
+        except Exception:
             # Creating frame for error outcome (covers name, value and unit frame)
             error_frame = tk.Frame(self, bg=dConsts.MAIN_FRAME_COLOR)
             error_frame.place(relx=0.3, rely=0.46, relwidth=0.4, relheight=0.4)
@@ -430,13 +430,12 @@ class Nutrients(Page):
                 font=("Arial", 18),
                 bg=dConsts.MAIN_FRAME_COLOR,
             )
-            error_label.place(relx=0.28, rely=0.3)
+            error_label.pack(pady=40)
 
     # Creates labels (outcome text) for nutrient name, value and unit
     def nutrient_label(self, frame, nutrient_list, x):
         y = 0
         for nutrient in nutrient_list:
-            print(nutrient)
             point = tk.Label(
                 frame,
                 text=nutrient,
