@@ -384,7 +384,7 @@ class Nutrients(Page):
     def getting_api(self, food):
         # API source: https://fdc.nal.usda.gov/api-guide.html
 
-        API_KEY = "msaEfc0OdowiMGDgSgBQewrZHYONfdJcH8OrAsaX"  # dConsts.API
+        API_KEY = dConsts.API
         query = food
         url = f"https://api.nal.usda.gov/fdc/v1/foods/search?api_key={API_KEY}&query={query}&dataType=Foundation,Survey%20%28FNDDS%29&pageSize=1&pageNumber=1"
         response = requests.get(url).json()
