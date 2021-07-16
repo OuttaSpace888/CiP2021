@@ -77,7 +77,7 @@ class Calculator(Page):
             bg="#5ddeef",
             activebackground="#4285f4",
             font=("Arial", 14),
-            command=lambda: self.calculating_weight(weight_entry.get()),
+            command=lambda: self.calculated_values(weight_entry.get()),
         )
         weight_btn.pack(pady=10)
 
@@ -94,43 +94,36 @@ class Calculator(Page):
         multiplier = 10 ** decimals
         return math.floor(n * multiplier + 0.5) / multiplier
 
+    def calculated_values(self, weight):
+        self.weight = weight
+        calories = self.calculating_calories(self.weight)
+        protein = self.calculating_protein(self.weight)
+
     # Calculates daily intake and displays them on the screen
-    def calculating_weight(self, weight):
+    def calculating_calories(self, weight):
+        self.weight = weight
         # Converts weight into float for accurate calculation and with the help of round_half_up() function,
         # rounds the outcome to nearest ones place and returns as integer
-        daily_calories = int(self.round_half_up(float(weight.strip().strip("kg")) * 30))
-        daily_protein = int(self.round_half_up(float(weight.strip().strip("kg")) * 1.2))
+        daily_calories = int(
+            self.round_half_up(float(self.weight.strip().strip("kg")) * 30)
+        )
 
-        # Creates StringVar for calories and protein in order to update value with re-submission
-        cal_number = tk.StringVar(value=daily_calories)
-        prot_number = tk.StringVar(value=daily_protein)
-
-        cal_number.get()
+        # Calorie label, but not actual calculated value in number only word
         calories = "Calories per day:"
-        prot_number.get()
-        protein = "Protein per day:"
-
-        # Calories and protein labels, excluding actual calculated value
         calories_result = tk.Label(
             self, text=calories, font=("Arial", 18), bg=dConsts.MAIN_FRAME_COLOR
         )
         calories_result.place(relx=0.33, rely=0.5, relwidth=0.2, relheight=0.1)
 
-        protein_result = tk.Label(
-            self, text=protein, font=("Arial", 18), bg=dConsts.MAIN_FRAME_COLOR
-        )
-        protein_result.place(relx=0.33, rely=0.6, relwidth=0.2, relheight=0.1)
-
         # Unit labels
         calories_unit = tk.Label(
-            self, text='kcal', font=("Arial", 18), bg=dConsts.MAIN_FRAME_COLOR
+            self, text="kcal", font=("Arial", 18), bg=dConsts.MAIN_FRAME_COLOR
         )
         calories_unit.place(relx=0.545, rely=0.5, relwidth=0.2, relheight=0.1)
-        protein_unit = tk.Label(
-            self, text='g', font=("Arial", 18), bg=dConsts.MAIN_FRAME_COLOR
-        )
-        protein_unit.place(relx=0.54, rely=0.6, relwidth=0.2, relheight=0.1)
 
+        # Creates StringVar for calories in order to update value with re-submission
+        cal_number = tk.StringVar(value=daily_calories)
+        cal_number.get()
         # Automatic self updating StringVar printed to the screen (actual calculated value)
         display_calories = tk.Label(
             self,
@@ -140,6 +133,29 @@ class Calculator(Page):
         )
         display_calories.place(relx=0.52, rely=0.5, relwidth=0.1, relheight=0.1)
 
+    def calculating_protein(self, weight):
+        self.weight = weight
+        # converts weight to float and rounds to nearest ones place
+        daily_protein = int(
+            self.round_half_up(float(self.weight.strip().strip("kg")) * 1.2)
+        )
+
+        # Protein label, not calculated value only 'announcement' label in word
+        protein = "Protein per day:"
+        protein_result = tk.Label(
+            self, text=protein, font=("Arial", 18), bg=dConsts.MAIN_FRAME_COLOR
+        )
+        protein_result.place(relx=0.33, rely=0.6, relwidth=0.2, relheight=0.1)
+
+        # Unit labels
+        protein_unit = tk.Label(
+            self, text="g", font=("Arial", 18), bg=dConsts.MAIN_FRAME_COLOR
+        )
+        protein_unit.place(relx=0.54, rely=0.6, relwidth=0.2, relheight=0.1)
+
+        # Calculated value stored in string variables. Updates with re-submission
+        prot_number = tk.StringVar(value=daily_protein)
+        prot_number.get()
         display_protein = tk.Label(
             self,
             textvariable=prot_number,
@@ -394,7 +410,7 @@ class Nutrients(Page):
     def getting_api(self, food):
         # API source: https://fdc.nal.usda.gov/api-guide.html
 
-        API_KEY = dConsts.API
+        API_KEY = "VQhgm2aUTEvSxYkFGaBfjdk0FMRh0dzXWninfsXi"  # dConsts.API
         query = food
         url = f"https://api.nal.usda.gov/fdc/v1/foods/search?api_key={API_KEY}&query={query}&dataType=Foundation,Survey%20%28FNDDS%29&pageSize=1&pageNumber=1"
         response = requests.get(url).json()
