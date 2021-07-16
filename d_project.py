@@ -123,7 +123,6 @@ class Calculator(Page):
 
         # Creates StringVar for calories in order to update value with re-submission
         cal_number = tk.StringVar(value=daily_calories)
-        cal_number.get()
         # Automatic self updating StringVar printed to the screen (actual calculated value)
         display_calories = tk.Label(
             self,
@@ -155,7 +154,6 @@ class Calculator(Page):
 
         # Calculated value stored in string variables. Updates with re-submission
         prot_number = tk.StringVar(value=daily_protein)
-        prot_number.get()
         display_protein = tk.Label(
             self,
             textvariable=prot_number,
