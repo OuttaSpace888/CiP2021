@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkmacosx import Button as button
 import requests
-import math
+from mathfuncs import round_half_up
 import dConsts
 
 
@@ -89,25 +89,24 @@ class Calculator(Page):
         )
         note.place(relx=0.05, rely=0.9)
 
-    # Rounds number > = 0.5 up, else down
-    def round_half_up(self, n, decimals=0):
-        multiplier = 10 ** decimals
-        return math.floor(n * multiplier + 0.5) / multiplier
-
     def calculated_values(self, weight):
-        self.weight = weight
-        calories = self.calculating_calories(self.weight)
-        protein = self.calculating_protein(self.weight)
+        calories = self.displaying_calories(weight)
+        protein = self.displaying_protein(weight)
 
     # Calculates daily intake and displays them on the screen
     def calculating_calories(self, weight):
-        self.weight = weight
         # Converts weight into float for accurate calculation and with the help of round_half_up() function,
         # rounds the outcome to nearest ones place and returns as integer
-        daily_calories = int(
-            self.round_half_up(float(self.weight.strip().strip("kg")) * 30)
-        )
+        daily_calories = int(round_half_up(float(weight.strip().strip("kg")) * 30))
+        return daily_calories
 
+    def calculating_protein(self, weight):
+        # converts weight to float and rounds to nearest ones place
+        daily_protein = int(round_half_up(float(weight.strip().strip("kg")) * 1.2))
+        return daily_protein
+
+    def displaying_calories(self, weight):
+        daily_calories = self.calculating_calories(weight)
         # Calorie label, but not actual calculated value in number only word
         calories = "Calories per day:"
         calories_result = tk.Label(
@@ -132,13 +131,8 @@ class Calculator(Page):
         )
         display_calories.place(relx=0.52, rely=0.5, relwidth=0.1, relheight=0.1)
 
-    def calculating_protein(self, weight):
-        self.weight = weight
-        # converts weight to float and rounds to nearest ones place
-        daily_protein = int(
-            self.round_half_up(float(self.weight.strip().strip("kg")) * 1.2)
-        )
-
+    def displaying_protein(self, weight):
+        daily_protein = self.calculating_protein(weight)
         # Protein label, not calculated value only 'announcement' label in word
         protein = "Protein per day:"
         protein_result = tk.Label(
@@ -408,7 +402,7 @@ class Nutrients(Page):
     def getting_api(self, food):
         # API source: https://fdc.nal.usda.gov/api-guide.html
 
-        API_KEY = "VQhgm2aUTEvSxYkFGaBfjdk0FMRh0dzXWninfsXi"  # dConsts.API
+        API_KEY = dConsts.API
         query = food
         url = f"https://api.nal.usda.gov/fdc/v1/foods/search?api_key={API_KEY}&query={query}&dataType=Foundation,Survey%20%28FNDDS%29&pageSize=1&pageNumber=1"
         response = requests.get(url).json()
